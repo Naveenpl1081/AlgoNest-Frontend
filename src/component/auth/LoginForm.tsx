@@ -23,7 +23,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
         [field]: e.target.value,
       }));
 
-     
       if (errors[field]) {
         setErrors((prev) => ({
           ...prev,
@@ -73,7 +72,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
 
   const handleSocialLogin = (provider: "github" | "google") => {
     console.log(`${provider} login for ${role}`);
-    alert(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login initiated for ${role}`);
+    alert(
+      `${
+        provider.charAt(0).toUpperCase() + provider.slice(1)
+      } login initiated for ${role}`
+    );
   };
 
   const navigateToSignup = () => {
@@ -119,6 +122,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
           required
           toggleable
         />
+        <button
+          onClick={() => navigate("/user/forgot-password")}
+          className="text-blue-400 hover:text-blue-300 underline underline-offset-2 decoration-2 transition-all"
+        >
+          Forgot Password?
+        </button>
 
         <div className="pt-2">
           <Button
@@ -150,13 +159,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
             <div className="w-full border-t border-slate-600"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-slate-700 text-gray-400">Or continue with</span>
+            <span className="px-2 bg-slate-700 text-gray-400">
+              Or continue with
+            </span>
           </div>
         </div>
 
         <div className="mt-6 flex gap-4 justify-center">
-          <SocialButton provider="github" onClick={() => handleSocialLogin("github")} />
-          <SocialButton provider="google" onClick={() => handleSocialLogin("google")} />
+          <SocialButton
+            provider="github"
+            onClick={() => handleSocialLogin("github")}
+          />
+          <SocialButton
+            provider="google"
+            onClick={() => handleSocialLogin("google")}
+          />
         </div>
       </div>
 

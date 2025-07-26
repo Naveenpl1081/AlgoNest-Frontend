@@ -1,31 +1,39 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { UserLikeRoles } from '../../types/auth.types';
 import Button from '../common/Button';
 
 interface Props {
   role: UserLikeRoles;
   onSubmit?: (otp: string) => Promise<void>;
+  onResend?: () => Promise<void>; 
 }
 
-const OtpForm: React.FC<Props> = ({ role, onSubmit }) => {
+const OtpForm: React.FC<Props> = ({ role, onSubmit, onResend }) => {
   const length = 4;
   const [otp, setOtp] = useState<string[]>(Array(length).fill(''));
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [timer, setTimer] = useState(60);
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
+  // ⏱️ Timer logic
+  useEffect(() => {
+    if (timer === 0) return;
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const handleChange = (value: string, index: number) => {
-    if (!/^\d?$/.test(value)) return; 
-
+    if (!/^\d?$/.test(value)) return;
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-
     if (value && index < length - 1) {
       inputsRef.current[index + 1]?.focus();
     }
-
     setError('');
   };
 
@@ -38,9 +46,8 @@ const OtpForm: React.FC<Props> = ({ role, onSubmit }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const fullOtp = otp.join('');
-
     if (fullOtp.length !== length) {
-      setError('Please enter a valid 6-digit OTP');
+      setError('Please enter a valid 4-digit OTP');
       return;
     }
 
@@ -54,6 +61,22 @@ const OtpForm: React.FC<Props> = ({ role, onSubmit }) => {
       setError('OTP verification failed');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (resendLoading || timer > 0) return;
+    try {
+      setResendLoading(true);
+      if (onResend) {
+        await onResend();
+        setOtp(Array(length).fill(''));
+        setTimer(60); // Restart timer
+      }
+    } catch (err) {
+      console.error("Resend OTP failed:", err);
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -78,7 +101,6 @@ const OtpForm: React.FC<Props> = ({ role, onSubmit }) => {
               ref={(el: HTMLInputElement | null) => {
                 inputsRef.current[idx] = el;
               }}
-              
               className="w-12 h-12 text-center text-xl rounded-lg bg-gray-800 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           ))}
@@ -98,8 +120,17 @@ const OtpForm: React.FC<Props> = ({ role, onSubmit }) => {
       </form>
 
       <div className="text-center mt-4 text-sm text-gray-400">
-        Didn't receive code?{' '}
-        <span className="text-blue-400 cursor-pointer underline">Resend</span>
+        {timer > 0 ? (
+          <>Resend code in <span className="text-blue-400">{timer}s</span></>
+        ) : (
+          <button
+            onClick={handleResend}
+            disabled={resendLoading}
+            className="text-blue-400 underline underline-offset-2 hover:text-blue-300 transition"
+          >
+            {resendLoading ? 'Resending...' : 'Resend OTP'}
+          </button>
+        )}
       </div>
     </div>
   );
