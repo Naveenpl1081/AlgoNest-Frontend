@@ -1,5 +1,5 @@
 import { axiosInstance } from "../config/axios.config";
-import { SignupFormData } from "../types/auth.types";
+import { LoginFormData, SignupFormData } from "../types/auth.types";
 
 const signup = async (formData: SignupFormData) => {
     try {
@@ -14,9 +14,9 @@ const signup = async (formData: SignupFormData) => {
       }
 };
 
-const verifyOtp = async (otp: string) => {
+const verifyOtp = async (otp: string,email:string,purpose:string) => {
     try {
-      const response = await axiosInstance.post("/api/user/verify-otp", { otp });
+      const response = await axiosInstance.post("/api/user/verify-otp", { otp ,email,purpose});
       console.log("OTP verify response:", response);
       return response.data;
     } catch (error: any) {
@@ -26,9 +26,72 @@ const verifyOtp = async (otp: string) => {
       };
     }
   };
-  
+
+const login=async (formData:LoginFormData)=>{
+  try {
+    console.log("login service enterd")
+    const response = await axiosInstance.post("/api/user/login", formData);
+    console.log("res",response)
+    return response.data
+  } catch (error:any) {
+    if (error.response && error.response.data) {
+      return {
+        success: false,
+        message: error.response.data.message || "Login failed",
+      };
+    }
+    return {
+      success: false,
+      message: "Something went wrong. Please try again.",
+    };
+  }
+}  
+
+const resendOtp = async (email: string) => {
+  try {
+    const response = await axiosInstance.post("/api/user/resend-otp", { email });
+    return response.data;
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Resend OTP failed.",
+    };
+  }
+};
+
+const checkUserExists = async (email: string) => {
+  try {
+    const res = await axiosInstance.post("/api/user/check-user", { email });
+    return res.data;
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.response?.data?.message || "Error checking user",
+    };
+  }
+};
+
+const resetPassword= async (email: string, newPassword: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    const response = await axiosInstance.post("/api/user/reset-password", {
+      email,
+      newPassword,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Server error. Please try again.",
+    };
+  }
+}
 
 export const userAuthService = {
   signup,
-  verifyOtp
+  verifyOtp,
+  login,
+  resendOtp,
+  checkUserExists,
+  resetPassword
 };

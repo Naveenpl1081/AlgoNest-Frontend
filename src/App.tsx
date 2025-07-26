@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import UserRoutes from './routes/UserRoutes'
+import UserRoutes from './routes/userRoutes/UserRoutes'
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 

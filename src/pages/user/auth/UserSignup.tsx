@@ -13,8 +13,11 @@ const UserSignup: React.FC = () => {
       const response = await userAuthService.signup(formData);
       console.log("consoling before the response in user signup page");
       console.log("response:", response.success);
+      const stateData={
+        email:response.email,
+      }
       if(response.success){
-        navigate("/user/otp");
+        navigate("/user/otp",{state:stateData});
         toast.success(response.message);
       }else{
         toast.error(response.message || "Signup failed. Please try again.");

@@ -15,7 +15,7 @@ export interface InputFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
   required?: boolean;
-  toggleable?: boolean; // 👈 New prop for password visibility toggle
+  toggleable?: boolean; 
 }
 
 
