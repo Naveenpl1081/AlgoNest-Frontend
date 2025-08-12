@@ -7,6 +7,10 @@ export interface AuthLayoutProps {
   auth?:Auth
 }
 
+export interface UserLayoutProps{
+  children:React.ReactNode
+}
+
 export interface InputFieldProps {
   label: string;
   type: string;

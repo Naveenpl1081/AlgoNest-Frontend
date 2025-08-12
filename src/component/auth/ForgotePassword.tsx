@@ -1,8 +1,7 @@
-// component/auth/ForgotePassword.tsx
-import React from 'react';
-import AuthLayouts from '../../layouts/AuthLayouts';
-import ForgotPasswordForm from './ForgotPasswordForm';
-import { ForgotProps } from '../../types/auth.types';
+import React from "react";
+import AuthLayouts from "../../layouts/AuthLayouts";
+import ForgotPasswordForm from "./ForgotPasswordForm";
+import { ForgotProps } from "../../types/auth.types";
 
 const ForgotePassword: React.FC<ForgotProps> = ({ role, auth, onSubmit }) => {
   return (

@@ -1,13 +1,14 @@
+
 import React, { useState, useEffect } from 'react';
-import { Code, Users, Briefcase, ChevronRight, Star, ArrowRight, Menu, X, Play, Check, MessageCircle, Zap, Target, Trophy } from 'lucide-react';
+import { Code, Users, Briefcase, ChevronRight, Star, ArrowRight, Menu, X, Play, Check, MessageCircle, Zap, Target, Trophy, UserPlus, Building2 } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
 const AlgoNestLanding = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [isModalAnimating, setIsModalAnimating] = useState(false);
   const navigate = useNavigate();
-
-
 
   const features = [
     {
@@ -65,17 +66,95 @@ const AlgoNestLanding = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleGetStarted = () => {
+    setShowSignupModal(true);
+    setTimeout(() => setIsModalAnimating(true), 10);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalAnimating(false);
+    setTimeout(() => setShowSignupModal(false), 300);
+  };
+
+  const handleSignupChoice = (type:string) => {
+    setIsModalAnimating(false);
+    setTimeout(() => {
+      setShowSignupModal(false);
+      if (type === 'user') {
+        navigate('/user/login');
+      } else if (type === 'recruiter') {
+        navigate('/recruiter/login');
+      }
+    }, 300);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
-      {/* Background Animation */}
+     
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         <div className="absolute top-3/4 left-1/2 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
+
+      {showSignupModal && (
+        <div className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300 ${
+          isModalAnimating ? 'bg-black/50 backdrop-blur-sm' : 'bg-black/0 backdrop-blur-none'
+        }`}>
+          <div className={`bg-slate-800 rounded-2xl p-8 border border-slate-600/50 max-w-md w-full mx-4 relative transition-all duration-300 transform ${
+            isModalAnimating ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
+          }`}>
+            <button
+              onClick={handleCloseModal}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors hover:rotate-90 duration-200"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            
+            <h3 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Choose Your Path
+            </h3>
+            
+            <div className="space-y-4">
+              <button
+                onClick={() => handleSignupChoice('user')}
+                className="w-full p-6 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-xl border border-blue-500/30 hover:border-blue-400/50 transition-all duration-200 group hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg group-hover:scale-110 transition-transform duration-200">
+                    <UserPlus className="w-6 h-6" />
+                  </div>
+                  <div className="text-left">
+                    <h4 className="text-lg font-semibold text-white">Join as Developer</h4>
+                    <p className="text-sm text-gray-300">Practice coding, find jobs, connect with community</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
+                </div>
+              </button>
+              
+              <button
+                onClick={() => handleSignupChoice('recruiter')}
+                className="w-full p-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl border border-purple-500/30 hover:border-purple-400/50 transition-all duration-200 group hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg group-hover:scale-110 transition-transform duration-200">
+                    <Building2 className="w-6 h-6" />
+                  </div>
+                  <div className="text-left">
+                    <h4 className="text-lg font-semibold text-white">Join as Recruiter</h4>
+                    <p className="text-sm text-gray-300">Find talented developers, post jobs, manage hiring</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-800/80 backdrop-blur-md border-b border-slate-700/50">
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-slate-800/80 backdrop-blur-md border-b border-slate-700/50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             AlgoNest
@@ -94,14 +173,12 @@ const AlgoNestLanding = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-          <button 
-  className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
-  onClick={() => navigate('/user/login')}
->
-  Login
-</button>
+           
 
-            <button onClick={()=>navigate("/user/signup")} className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-200">
+            <button 
+              onClick={handleGetStarted} 
+              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-200"
+            >
               Get Started
             </button>
           </div>
@@ -124,8 +201,11 @@ const AlgoNestLanding = () => {
                 </a>
               ))}
               <div className="pt-4 border-t border-slate-700/50">
-                <button className="block w-full text-left text-gray-300 hover:text-white mb-3">Login</button>
-                <button className="w-full px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg font-semibold">
+               
+                <button 
+                  onClick={handleGetStarted}
+                  className="w-full px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg font-semibold"
+                >
                   Get Started
                 </button>
               </div>
@@ -164,7 +244,10 @@ const AlgoNestLanding = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-200 flex items-center justify-center">
+                <button 
+                  onClick={handleGetStarted}
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-200 flex items-center justify-center"
+                >
                   Start Coding
                   <ChevronRight className="ml-2 w-5 h-5" />
                 </button>
@@ -269,10 +352,6 @@ const AlgoNestLanding = () => {
                   </div>
                   <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
                   <p className="text-gray-300 leading-relaxed mb-6">{feature.description}</p>
-                  <button className="flex items-center text-blue-400 hover:text-blue-300 transition-colors">
-                    Learn More
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </button>
                 </div>
               </div>
             ))}
@@ -314,10 +393,6 @@ const AlgoNestLanding = () => {
                   </div>
                 ))}
               </div>
-
-              <button className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold text-lg hover:from-purple-500 hover:to-pink-500 transition-all duration-200">
-                Explore Jobs
-              </button>
             </div>
 
             <div className="space-y-4">
@@ -388,7 +463,6 @@ const AlgoNestLanding = () => {
                           <MessageCircle className="w-4 h-4 mr-1" />
                           {post.replies} replies
                         </div>
-                        <button className="text-blue-400 hover:text-blue-300">Reply</button>
                       </div>
                     </div>
                   </div>
@@ -426,10 +500,6 @@ const AlgoNestLanding = () => {
                   </div>
                 ))}
               </div>
-
-              <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl font-semibold text-lg hover:from-blue-500 hover:to-cyan-500 transition-all duration-200">
-                Join Community
-              </button>
             </div>
           </div>
         </div>
@@ -488,12 +558,12 @@ const AlgoNestLanding = () => {
               Join thousands of developers who are already advancing their careers with AlgoNest
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-200 flex items-center justify-center">
+              <button 
+                onClick={handleGetStarted}
+                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-200 flex items-center justify-center"
+              >
                 Start Your Journey
                 <Trophy className="ml-2 w-5 h-5" />
-              </button>
-              <button className="px-8 py-4 bg-slate-700/50 backdrop-blur-md rounded-xl font-semibold text-lg border border-slate-600/50 hover:bg-slate-600/50 transition-all duration-200">
-                Learn More
               </button>
             </div>
           </div>

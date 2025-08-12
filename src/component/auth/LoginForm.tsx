@@ -80,7 +80,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
   };
 
   const navigateToSignup = () => {
-    navigate("/user/signup");
+    console.log("role", role);
+    navigate(`/${role.toLocaleLowerCase()}/signup`);
   };
 
   return (
@@ -123,7 +124,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
           toggleable
         />
         <button
-          onClick={() => navigate("/user/forgot-password")}
+          onClick={() => navigate(`/${role.toLowerCase()}/forgot-password`)}
           className="text-blue-400 hover:text-blue-300 underline underline-offset-2 decoration-2 transition-all"
         >
           Forgot Password?

@@ -1,14 +1,15 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import UserSignup from '../../pages/user/auth/UserSignup'
-import UserLogin from '../../pages/user/auth/UserLogin'
-import UserOtp from '../../pages/user/auth/UserOtp'
-import AlgoNestLanding from '../../pages/AlgoNestLanding'
-import UserHomePage from "../../pages/user/userpages/UserHomePage"
-import UserForgotPassword from '../../pages/user/auth/UserForgotPassword'
-import UserResetPassword from '../../pages/user/auth/UserResetPassword'
-import { UserPublicRoutes } from './UserPublicRoutes'
-import { UserPrivateRoutes } from './UserPrivateRoutes'
+import UserSignup from '../pages/user/auth/UserSignup'
+import UserLogin from '../pages/user/auth/UserLogin'
+import UserOtp from '../pages/user/auth/UserOtp'
+import AlgoNestLanding from '../pages/AlgoNestLanding'
+import UserHomePage from "../pages/user/userpages/UserHomePage"
+import UserForgotPassword from '../pages/user/auth/UserForgotPassword'
+import UserResetPassword from '../pages/user/auth/UserResetPassword'
+import { UserPublicRoutes } from './PublicRoutes'
+import { UserPrivateRoutes } from './PrivateRoutes'
+import UserProfilePage from '../pages/user/userpages/UserProfilePage'
 
 const UserRoutes = () => {
   return (
@@ -25,6 +26,7 @@ const UserRoutes = () => {
 
         <Route element={<UserPrivateRoutes/>}>
         <Route path="/user/home" element={<UserHomePage/>} />
+        <Route path='/user/profile' element={<UserProfilePage/>}/>
         </Route>
         
     </Routes>
@@ -32,3 +34,4 @@ const UserRoutes = () => {
 }
 
 export default UserRoutes
+

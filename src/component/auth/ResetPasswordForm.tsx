@@ -22,7 +22,9 @@ const ResetPasswordForm: React.FC<Props> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-6">
-      <h2 className="text-2xl font-bold text-white text-center">Reset Password</h2>
+      <h2 className="text-2xl font-bold text-white text-center">
+        Reset Password
+      </h2>
       <InputField
         label="New Password"
         type="password"

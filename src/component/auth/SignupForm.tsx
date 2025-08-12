@@ -7,9 +7,7 @@ import { SignupFormProps } from "../../types/auth.types";
 import { useNavigate } from "react-router-dom";
 import { validateSignupForm } from "../../utils/validations/ValidateSignupForm" ;
 
-
-
-const SignupForm: React.FC<SignupFormProps> = ({ role = 'User', onSubmit }) => {
+const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
     const [formData, setFormData] = useState<SignupFormData>({
       username: "",
       email: "",
@@ -71,7 +69,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role = 'User', onSubmit }) => {
     };
   
     const navigateToLogin = () => {
-     navigate("/user/login")
+     navigate(`/${role.toLocaleLowerCase()}/login`)
     };
   
     return (
