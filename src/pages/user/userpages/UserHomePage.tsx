@@ -1,37 +1,155 @@
-import React, { useState } from 'react';
-import { Search, Filter, Calendar, ChevronLeft, ChevronRight, Bell, User, Trophy, Clock, BarChart3 } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Search,
+  Filter,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Bell,
+  User,
+  Trophy,
+  Clock,
+  BarChart3,
+} from "lucide-react";
+import UserLayout from "../../../layouts/UserLayout";
 
 const UserHomePage = () => {
   const [selectedDate, setSelectedDate] = useState(4);
-  const [currentMonth, setCurrentMonth] = useState('May');
-  const [searchQuery, setSearchQuery] = useState('');
-  
+  const [currentMonth, setCurrentMonth] = useState("May");
+  const [searchQuery, setSearchQuery] = useState("");
+
   const problems = [
-    { id: 1, title: 'Two Sum', difficulty: 'Easy', acceptance: '49.2%', category: 'Array' },
-    { id: 2, title: 'Add Two Numbers', difficulty: 'Medium', acceptance: '38.4%', category: 'Linked List' },
-    { id: 3, title: 'Longest Substring Without Repeating Characters', difficulty: 'Medium', acceptance: '33.8%', category: 'String' },
-    { id: 4, title: 'Median of Two Sorted Arrays', difficulty: 'Hard', acceptance: '35.4%', category: 'Array' },
-    { id: 5, title: 'Longest Palindromic Substring', difficulty: 'Medium', acceptance: '32.7%', category: 'String' },
-    { id: 6, title: 'Zigzag Conversion', difficulty: 'Medium', acceptance: '42.1%', category: 'String' },
-    { id: 7, title: 'Reverse Integer', difficulty: 'Medium', acceptance: '27.3%', category: 'Math' },
-    { id: 8, title: 'String to Integer (atoi)', difficulty: 'Medium', acceptance: '16.4%', category: 'String' },
-    { id: 9, title: 'Palindrome Number', difficulty: 'Easy', acceptance: '52.8%', category: 'Math' },
-    { id: 10, title: 'Regular Expression Matching', difficulty: 'Hard', acceptance: '27.9%', category: 'String' },
-    { id: 11, title: 'Container With Most Water', difficulty: 'Medium', acceptance: '54.1%', category: 'Array' },
-    { id: 12, title: 'Integer to Roman', difficulty: 'Medium', acceptance: '59.2%', category: 'String' },
-    { id: 13, title: 'Roman to Integer', difficulty: 'Easy', acceptance: '58.4%', category: 'String' },
-    { id: 14, title: 'Longest Common Prefix', difficulty: 'Easy', acceptance: '40.1%', category: 'String' },
-    { id: 15, title: '3Sum', difficulty: 'Medium', acceptance: '32.4%', category: 'Array' },
-    { id: 16, title: '3Sum Closest', difficulty: 'Medium', acceptance: '46.2%', category: 'Array' },
-    { id: 17, title: 'Letter Combinations of a Phone Number', difficulty: 'Medium', acceptance: '55.8%', category: 'Backtracking' }
+    {
+      id: 1,
+      title: "Two Sum",
+      difficulty: "Easy",
+      acceptance: "49.2%",
+      category: "Array",
+    },
+    {
+      id: 2,
+      title: "Add Two Numbers",
+      difficulty: "Medium",
+      acceptance: "38.4%",
+      category: "Linked List",
+    },
+    {
+      id: 3,
+      title: "Longest Substring Without Repeating Characters",
+      difficulty: "Medium",
+      acceptance: "33.8%",
+      category: "String",
+    },
+    {
+      id: 4,
+      title: "Median of Two Sorted Arrays",
+      difficulty: "Hard",
+      acceptance: "35.4%",
+      category: "Array",
+    },
+    {
+      id: 5,
+      title: "Longest Palindromic Substring",
+      difficulty: "Medium",
+      acceptance: "32.7%",
+      category: "String",
+    },
+    {
+      id: 6,
+      title: "Zigzag Conversion",
+      difficulty: "Medium",
+      acceptance: "42.1%",
+      category: "String",
+    },
+    {
+      id: 7,
+      title: "Reverse Integer",
+      difficulty: "Medium",
+      acceptance: "27.3%",
+      category: "Math",
+    },
+    {
+      id: 8,
+      title: "String to Integer (atoi)",
+      difficulty: "Medium",
+      acceptance: "16.4%",
+      category: "String",
+    },
+    {
+      id: 9,
+      title: "Palindrome Number",
+      difficulty: "Easy",
+      acceptance: "52.8%",
+      category: "Math",
+    },
+    {
+      id: 10,
+      title: "Regular Expression Matching",
+      difficulty: "Hard",
+      acceptance: "27.9%",
+      category: "String",
+    },
+    {
+      id: 11,
+      title: "Container With Most Water",
+      difficulty: "Medium",
+      acceptance: "54.1%",
+      category: "Array",
+    },
+    {
+      id: 12,
+      title: "Integer to Roman",
+      difficulty: "Medium",
+      acceptance: "59.2%",
+      category: "String",
+    },
+    {
+      id: 13,
+      title: "Roman to Integer",
+      difficulty: "Easy",
+      acceptance: "58.4%",
+      category: "String",
+    },
+    {
+      id: 14,
+      title: "Longest Common Prefix",
+      difficulty: "Easy",
+      acceptance: "40.1%",
+      category: "String",
+    },
+    {
+      id: 15,
+      title: "3Sum",
+      difficulty: "Medium",
+      acceptance: "32.4%",
+      category: "Array",
+    },
+    {
+      id: 16,
+      title: "3Sum Closest",
+      difficulty: "Medium",
+      acceptance: "46.2%",
+      category: "Array",
+    },
+    {
+      id: 17,
+      title: "Letter Combinations of a Phone Number",
+      difficulty: "Medium",
+      acceptance: "55.8%",
+      category: "Backtracking",
+    },
   ];
 
-  const getDifficultyColor = (difficulty:any) => {
-    switch(difficulty) {
-      case 'Easy': return 'text-green-400 bg-green-400/10';
-      case 'Medium': return 'text-yellow-400 bg-yellow-400/10';
-      case 'Hard': return 'text-red-400 bg-red-400/10';
-      default: return 'text-gray-400 bg-gray-400/10';
+  const getDifficultyColor = (difficulty: any) => {
+    switch (difficulty) {
+      case "Easy":
+        return "text-green-400 bg-green-400/10";
+      case "Medium":
+        return "text-yellow-400 bg-yellow-400/10";
+      case "Hard":
+        return "text-red-400 bg-red-400/10";
+      default:
+        return "text-gray-400 bg-gray-400/10";
     }
   };
 
@@ -40,49 +158,20 @@ const UserHomePage = () => {
     [5, 6, 7, 8, 9, 10, 11],
     [12, 13, 14, 15, 16, 17, 18],
     [19, 20, 21, 22, 23, 24, 25],
-    [26, 27, 28, 29, null, null, null]
+    [26, 27, 28, 29, null, null, null],
   ];
 
   const trendingCompanies = [
-    'Google', 'Microsoft', 'Amazon', 'Meta', 'Apple', 'Netflix'
+    "Google",
+    "Microsoft",
+    "Amazon",
+    "Meta",
+    "Apple",
+    "Netflix",
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-      {/* Header */}
-      <div className="bg-slate-800/90 backdrop-blur-md border-b border-slate-700/50 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              AlgoNest
-            </div>
-            
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-white hover:text-blue-400 transition-colors font-medium border-b-2 border-blue-500 pb-1">
-                Problems
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                Community
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                Interview
-              </a>
-            </nav>
-            
-            {/* Right side */}
-            <div className="flex items-center space-x-4">
-              <Bell className="w-5 h-5 text-gray-300 hover:text-white cursor-pointer transition-colors" />
-              <User className="w-5 h-5 text-gray-300 hover:text-white cursor-pointer transition-colors" />
-              <span className="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-medium rounded-lg">
-                Premium
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <UserLayout>
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
@@ -94,7 +183,9 @@ const UserHomePage = () => {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     <Trophy className="w-6 h-6 text-blue-400" />
-                    <h2 className="text-xl font-bold text-white">Daily Challenge</h2>
+                    <h2 className="text-xl font-bold text-white">
+                      Daily Challenge
+                    </h2>
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-gray-300">
                     <Clock className="w-4 h-4" />
@@ -102,8 +193,13 @@ const UserHomePage = () => {
                   </div>
                 </div>
                 <div className="bg-slate-700/60 backdrop-blur-sm rounded-xl p-4 mb-4">
-                  <h3 className="text-lg font-semibold text-white mb-2">Two Sum</h3>
-                  <p className="text-gray-300 text-sm">Given an array of integers nums and an integer target, return indices of the two numbers...</p>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    Two Sum
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Given an array of integers nums and an integer target,
+                    return indices of the two numbers...
+                  </p>
                 </div>
                 <button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-300">
                   Start Challenge
@@ -188,12 +284,18 @@ const UserHomePage = () => {
                       </span>
                     </div>
                     <div className="col-span-2 flex items-center justify-center">
-                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${getDifficultyColor(problem.difficulty)}`}>
+                      <span
+                        className={`text-xs font-medium px-2 py-1 rounded-full ${getDifficultyColor(
+                          problem.difficulty
+                        )}`}
+                      >
                         {problem.difficulty}
                       </span>
                     </div>
                     <div className="col-span-2 flex items-center justify-center">
-                      <span className="text-gray-300 text-sm">{problem.acceptance}</span>
+                      <span className="text-gray-300 text-sm">
+                        {problem.acceptance}
+                      </span>
                     </div>
                     <div className="col-span-2 flex items-center justify-center">
                       <span className="text-gray-400 text-sm bg-slate-600/30 px-2 py-1 rounded-md">
@@ -211,7 +313,9 @@ const UserHomePage = () => {
             {/* Calendar */}
             <div className="bg-slate-700/40 border border-slate-600/30 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-white">{currentMonth} 2024</h3>
+                <h3 className="text-lg font-semibold text-white">
+                  {currentMonth} 2024
+                </h3>
                 <div className="flex items-center space-x-2">
                   <button className="p-1.5 hover:bg-slate-600/50 rounded-lg transition-colors">
                     <ChevronLeft className="w-4 h-4 text-gray-400" />
@@ -221,28 +325,35 @@ const UserHomePage = () => {
                   </button>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-7 gap-1 mb-3">
-                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
-                  <div key={index} className={`text-center text-xs font-medium py-2 ${
-                    index === 0 ? 'text-red-400' : 
-                    index === 6 ? 'text-blue-400' : 'text-gray-400'
-                  }`}>
+                {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
+                  <div
+                    key={index}
+                    className={`text-center text-xs font-medium py-2 ${
+                      index === 0
+                        ? "text-red-400"
+                        : index === 6
+                        ? "text-blue-400"
+                        : "text-gray-400"
+                    }`}
+                  >
                     {day}
                   </div>
                 ))}
               </div>
-              
+
               <div className="grid grid-cols-7 gap-1">
                 {calendarDays.flat().map((day, index) => (
                   <div
                     key={index}
                     onClick={() => day && setSelectedDate(day)}
                     className={`text-center text-sm py-2 rounded-lg cursor-pointer transition-all ${
-                      day === null ? '' :
-                      day === selectedDate 
-                        ? 'bg-blue-500 text-white font-medium' 
-                        : 'text-gray-300 hover:bg-slate-600/50'
+                      day === null
+                        ? ""
+                        : day === selectedDate
+                        ? "bg-blue-500 text-white font-medium"
+                        : "text-gray-300 hover:bg-slate-600/50"
                     }`}
                   >
                     {day}
@@ -253,7 +364,9 @@ const UserHomePage = () => {
 
             {/* Trending Companies */}
             <div className="bg-slate-700/40 border border-slate-600/30 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Trending Companies</h3>
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Trending Companies
+              </h3>
               <div className="relative mb-4">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
@@ -262,7 +375,7 @@ const UserHomePage = () => {
                   className="w-full bg-slate-600/50 border border-slate-500/50 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-all"
                 />
               </div>
-              
+
               <div className="space-y-3">
                 {trendingCompanies.map((company, index) => (
                   <div
@@ -270,7 +383,9 @@ const UserHomePage = () => {
                     className="bg-slate-600/30 hover:bg-slate-600/50 rounded-lg px-4 py-3 transition-colors cursor-pointer flex items-center justify-between"
                   >
                     <span className="text-white font-medium">{company}</span>
-                    <span className="text-xs text-gray-400">{Math.floor(Math.random() * 50) + 20} questions</span>
+                    <span className="text-xs text-gray-400">
+                      {Math.floor(Math.random() * 50) + 20} questions
+                    </span>
                   </div>
                 ))}
               </div>
@@ -278,20 +393,7 @@ const UserHomePage = () => {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-slate-800/50 border-t border-slate-700/50 mt-16">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between text-sm text-gray-400">
-            <div className="flex items-center space-x-6">
-              <span>Copyright © 2025 AlgoNest</span>
-              <a href="#" className="hover:text-white transition-colors">Help Center</a>
-              <a href="#" className="hover:text-white transition-colors">Jobs</a>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </UserLayout>
   );
 };
 

@@ -1,4 +1,3 @@
-// component/auth/ForgotPasswordForm.tsx
 import React, { useState } from "react";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
