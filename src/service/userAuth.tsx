@@ -1,7 +1,6 @@
 import { axiosInstance } from "../config/axios.config";
 import { LoginFormData, SignupFormData } from "../types/auth.types";
 import { USER_API } from "../utils/apiRoutes";
-import axios from "axios";
 import Cookies from "js-cookie";
 
 const signup = async (formData: SignupFormData) => {
