@@ -22,7 +22,7 @@ const RecruiterLogin: React.FC = () => {
         });
 
         toast.success(response.message || "Login successful!");
-        navigate("/recruiter/portal");
+        navigate("/recruiter/portal", { state: { emailVerify: response?.data?.emailVerify,isVerified:response?.data?.isVerified,status:response?.data?.status } });
       } else {
         toast.error(response.message || "Login failed. Please try again.");
       }

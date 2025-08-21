@@ -8,14 +8,14 @@ import { ConfirmModal } from "../../../component/common/ConfirmModal";
 import Pagination from "../../../component/common/Pagination";
 import { Column } from "../../../types/component.types";
 import { DropdownFilter } from "../../../component/common/DropDownFilter";
-import {IUser} from "../../../models/user"
+import { IRecruiter } from "../../../models/recruiter";
 
-export const UsersListPage: React.FC = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
+export const RecruiterListPage: React.FC = () => {
+  const [users, setUsers] = useState<IRecruiter[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const [selectedUser, setSelectedUser] = useState<IRecruiter | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -27,7 +27,7 @@ export const UsersListPage: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await adminAuthService.getAllUsers({
+      const res = await adminAuthService.getAllRecruiter({
         page: currentPage,
         limit,
         search: searchTerm || undefined,
@@ -47,7 +47,7 @@ export const UsersListPage: React.FC = () => {
     }
   };
 
-  const openConfirmModal = (user: IUser) => {
+  const openConfirmModal = (user: IRecruiter) => {
     setSelectedUser(user);
     setModalOpen(true);
   };
@@ -56,7 +56,7 @@ export const UsersListPage: React.FC = () => {
     if (!selectedUser) return;
 
     try {
-      const res = await adminAuthService.toggleUserStatus(selectedUser._id);
+      const res = await adminAuthService.toggleRecruiterStatus(selectedUser._id);
       if (res.success) {
         await fetchUsers();
       } else {
@@ -70,11 +70,11 @@ export const UsersListPage: React.FC = () => {
     }
   };
 
-  const columns: Column<IUser>[] = [
+  const columns: Column<IRecruiter>[] = [
     {
       key: "serial",
       label: "S.No",
-      render: (_item, index) => index + 1, 
+      render: (_item, index) => index + 1,
     },
     { key: "username", label: "Username" },
     { key: "email", label: "Email" },
@@ -86,7 +86,7 @@ export const UsersListPage: React.FC = () => {
     {
       key: "action",
       label: "Action",
-      render: (item: IUser) => (
+      render: (item: IRecruiter) => (
         <Button
           variant={item.status === "Active" ? "secondary" : "primary"}
           size="sm"
