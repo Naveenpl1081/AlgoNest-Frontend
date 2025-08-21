@@ -1,5 +1,4 @@
 import React from 'react';
-import { LogOut } from 'lucide-react';
 import { UserLayoutProps } from '../types/component.types';
 import UserNavbar from '../component/user/UserNavbar';
 import UserFooter from '../component/user/UserFooter';

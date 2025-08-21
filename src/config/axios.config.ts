@@ -82,7 +82,7 @@ axiosInstance.interceptors.response.use(
 
     if (
       error.response?.status === 403 &&
-      error.response?.data?.accountBlocked
+      error.response?.data?.message
     ) {
       console.log("Account is blocked, redirecting to login...");
 

@@ -5,7 +5,8 @@ import RecruiterLogin from "../pages/Recruiter/auth/RecruiterLogin";
 import RecruiterOtp from "../pages/Recruiter/auth/RecruiterOtp";
 import RecruiterForgotPassword from "../pages/Recruiter/auth/RecruiterForgotPassword";
 import RecruiterResetPassword from "../pages/Recruiter/auth/RecruiterResetPassword";
-import RecruiterPortal from "../pages/Recruiter/recruiterPages/RecruiterPortalPage";
+import RecruiterVerifyPage from "../pages/Recruiter/recruiterPages/RecruiterVerifyPage";
+import RecruiterPortalWrapper from "../pages/Recruiter/recruiterPages/RecruiterPortalWrapper";
 import { RecruiterPrivateRoutes } from "./PrivateRoutes";
 import { RecruiterPublicRoutes } from "./PublicRoutes";
 
@@ -27,7 +28,8 @@ const RecruiterRoutes:React.FC = () => {
       </Route>
 
       <Route element={<RecruiterPrivateRoutes />}>
-        <Route path="/recruiter/portal" element={<RecruiterPortal />} />
+        <Route path="/recruiter/portal" element={<RecruiterPortalWrapper />} />
+        <Route path='/recruiter/verify' element={<RecruiterVerifyPage/>}/>
       </Route>
     </Routes>
   );

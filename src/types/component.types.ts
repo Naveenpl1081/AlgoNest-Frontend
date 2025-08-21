@@ -10,6 +10,9 @@ export interface AuthLayoutProps {
 export interface UserLayoutProps{
   children:React.ReactNode
 }
+export interface RecruiterLayoutProps{
+  children:React.ReactNode
+}
 
 export interface InputFieldProps {
   label: string;
@@ -36,4 +39,23 @@ export interface ButtonProps {
 export interface SocialButtonProps {
   provider: 'github' | 'google';
   onClick: () => void;
+}
+
+export interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+export interface TableProps<T> {
+  data: T[];
+  columns: Column<T>[];
+  currentPage: number;
+  loading?: boolean;
+  pageSize?: number;
+}
+export interface Column<T> {
+  key: keyof T | "action" | "serial";
+  label: string;
+  render?: (item: T, index: number) => React.ReactNode;
 }
