@@ -19,8 +19,8 @@ const AdminRoutes: React.FC = () => {
       <Route element={<AdminPrivateRoutes />}>
          <Route path="/admin/dashboard" element={<AdminDashboardPage/>} />
          <Route path="/admin/users" element={<UsersListPage/>} />
-         <Route path="/admin/recruiter" element={<RecruiterListPage/>} />
-         <Route path="/admin/applicants" element={<ApplicantsListPage/>} />
+         <Route path="/admin/recruiter" element={<RecruiterListPage user="recruiter"/>} />
+         <Route path="/admin/applicants" element={<ApplicantsListPage user="applicants"/>} />
          <Route path="/admin/applicants/:id" element={<ApplicantDetails/>} />
 
       </Route>

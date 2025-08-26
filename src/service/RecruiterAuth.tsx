@@ -1,6 +1,7 @@
 import { axiosInstance } from "../config/axios.config";
 import { LoginFormData, SignupFormData } from "../types/auth.types";
 import { RECRUITER_API } from "../utils/apiRoutes";
+import Cookies from "js-cookie";
 
 const signup = async (formData: SignupFormData) => {
   try {
@@ -130,6 +131,28 @@ const approveRecruiter = async (formData: FormData) => {
     };
   }
 };
+
+const getRecruiterProfile= async () => {
+  try {
+    const token = Cookies.get("access_token");
+    if (!token) {
+      throw new Error("Access token not found");
+    }
+    const response = await axiosInstance.get(`${RECRUITER_API}/recruiter-profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "Error fetching recruiter profile:",
+      error?.response?.data || error.message
+    );
+    throw error;
+  }
+}
 export const recruiterAuthService = {
   signup,
   verifyOtp,
@@ -138,4 +161,5 @@ export const recruiterAuthService = {
   checkUserExists,
   resetPassword,
   approveRecruiter,
+  getRecruiterProfile
 };

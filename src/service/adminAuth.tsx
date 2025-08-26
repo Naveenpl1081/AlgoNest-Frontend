@@ -144,7 +144,7 @@ const rejectApplicant = async (applicantId: string,rejectReason:string) => {
   try {
     console.log("rejec",rejectReason)
     const response = await axiosInstance.patch(
-      `${ADMIN_API}/applicants/${applicantId}/reject`,rejectReason
+      `${ADMIN_API}/reject-applicant/${applicantId}`,{rejectReason}
     );
     return response.data;
   } catch (error: any) {

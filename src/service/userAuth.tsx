@@ -49,6 +49,48 @@ const login=async (formData:LoginFormData)=>{
   }
 }  
 
+const githubAuth=async (code: string) => {
+  try {
+    console.log("GitHub auth service entered with code:", code);
+    const response = await axiosInstance.post(`${USER_API}/github/callback`, { code });
+    console.log("GitHub auth response:", response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return {
+        success: false,
+        message: error.response.data.message || "GitHub login failed",
+      };
+    }
+    return {
+      success: false,
+      message: "Something went wrong. Please try again.",
+    };
+  }
+}
+
+const linkedinAuth = async (code: string) => {
+  try {
+    console.log("LinkedIn auth service entered with code:", code);
+    const response = await axiosInstance.post(`${USER_API}/linkedin/callback`, { code });
+    console.log("LinkedIn auth response:", response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return {
+        success: false,
+        message: error.response.data.message || "LinkedIn login failed",
+      };
+    }
+    return {
+      success: false,
+      message: "Something went wrong. Please try again.",
+    };
+  }
+};
+
+
+
 const resendOtp = async (email: string) => {
   try {
     const response = await axiosInstance.post(`${USER_API}/resend-otp`, { email });
@@ -92,15 +134,16 @@ const resetPassword= async (email: string, newPassword: string): Promise<{ succe
 
 const getUserProfile = async () => {
   try {
-    const token = Cookies.get("access_token");
-    if (!token) {
-      throw new Error("Access token not found");
-    }
-    const response = await axiosInstance.get(`${USER_API}/user-profile`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    // const token = Cookies.get("access_token");
+    // if (!token) {
+    //   throw new Error("Access token not found");
+    // }
+    // const response = await axiosInstance.get(`${USER_API}/user-profile`, {
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // });
+    const response = await axiosInstance.get(`${USER_API}/user-profile`)
 
     return response.data;
   } catch (error: any) {
@@ -142,5 +185,7 @@ export const userAuthService = {
   checkUserExists,
   resetPassword,
   getUserProfile,
-  updateProfile
+  updateProfile,
+  githubAuth,
+  linkedinAuth
 };

@@ -4,6 +4,8 @@ import InputField from "../common/InputField";
 import Button from "../common/Button";
 import SocialButton from "../common/SocialButton";
 import { useNavigate } from "react-router-dom";
+import { githubAuthService } from "../../service/githubAuth";
+import { linkedinAuthService } from "../../service/linkedinAuth";
 
 const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
   const [formData, setFormData] = useState<LoginFormData>({
@@ -70,13 +72,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
     }
   };
 
-  const handleSocialLogin = (provider: "github" | "google") => {
-    console.log(`${provider} login for ${role}`);
-    alert(
-      `${
-        provider.charAt(0).toUpperCase() + provider.slice(1)
-      } login initiated for ${role}`
-    );
+  const handleSocialLogin = (provider: "github" | "linkedin") => {
+    if (provider === "github") {
+      console.log(`GitHub login for ${role}`);
+      githubAuthService.redirectToGitHub();
+    } else {
+      console.log(`${provider} login for ${role}`);
+      linkedinAuthService.redirectToLinkedIn();
+    }
   };
 
   const navigateToSignup = () => {
@@ -172,8 +175,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
             onClick={() => handleSocialLogin("github")}
           />
           <SocialButton
-            provider="google"
-            onClick={() => handleSocialLogin("google")}
+            provider="linkedin"
+            onClick={() => handleSocialLogin("linkedin")}
           />
         </div>
       </div>

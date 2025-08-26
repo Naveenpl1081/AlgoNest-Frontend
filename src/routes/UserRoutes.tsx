@@ -10,6 +10,8 @@ import UserResetPassword from '../pages/user/auth/UserResetPassword'
 import { UserPublicRoutes } from './PublicRoutes'
 import { UserPrivateRoutes } from './PrivateRoutes'
 import UserProfilePage from '../pages/user/userpages/UserProfilePage'
+import GitHubCallback from '../component/auth/GitHubCallback'
+import LinkedinCallback from '../component/auth/LinkedInCallback'
 
 const UserRoutes = () => {
   return (
@@ -21,6 +23,8 @@ const UserRoutes = () => {
             <Route path="/" element={<AlgoNestLanding />} />
             <Route path="/user/forgot-password" element={<UserForgotPassword />} />
             <Route path='/user/reset-password' element={<UserResetPassword/>}/>
+            <Route path="/auth/github/callback" element={<GitHubCallback/>}/>
+            <Route path="/auth/linkedin/callback" element={<LinkedinCallback />} />
         </Route>
 
 

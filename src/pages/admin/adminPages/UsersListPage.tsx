@@ -81,7 +81,19 @@ export const UsersListPage: React.FC = () => {
     {
       key: "status",
       label: "Status",
-      render: (item) => (item.status === "Active" ? "Active" : "Blocked"),
+      render: (item) => (
+        <span
+          className={`px-2 py-1 rounded-full text-sm font-medium ${
+            item.status === "Active"
+              ? "bg-green-100 text-green-700"
+              : item.status === "InActive"
+              ? "bg-red-100 text-red-700"
+              : "bg-yellow-100 text-yellow-700"
+          }`}
+        >
+          {item.status}
+        </span>
+      ),
     },
     {
       key: "action",
@@ -101,7 +113,7 @@ export const UsersListPage: React.FC = () => {
   return (
     <AdminLayout>
       <div className="p-6 space-y-6">
-        <h1 className="text-3xl font-bold text-white">Users</h1>
+        <h1 className="text-3xl font-bold text-white">Students</h1>
 
         <div className="w-full sm:w-1/2 lg:w-1/3">
           <Search

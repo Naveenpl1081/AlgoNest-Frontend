@@ -7,7 +7,11 @@ import { Column } from "../../../types/component.types";
 import { IRecruiter } from "../../../models/recruiter";
 import { useNavigate } from "react-router-dom";
 
-export const ApplicantsListPage: React.FC = () => {
+interface ApplicantsListPageProps {
+  user: string;
+}
+
+export const ApplicantsListPage: React.FC<ApplicantsListPageProps> = ({user}) => {
   const [applicants, setApplicants] = useState<IRecruiter[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -101,7 +105,7 @@ export const ApplicantsListPage: React.FC = () => {
           className="text-blue-500 hover:underline"
           onClick={() =>
             navigate(`/admin/applicants/${item._id}`, {
-              state: { applicant: item },
+              state: { applicant: item, user:user},
             })
           }
         >
