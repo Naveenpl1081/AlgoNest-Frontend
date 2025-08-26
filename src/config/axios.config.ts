@@ -65,10 +65,14 @@ export const newAccessToken = async () => {
 
 axiosInstance.interceptors.request.use(
   (config) => {
+    
+    console.log("entering to the request intersepter")
     const token = Cookies.get("access_token");
+    console.log("token attached by the requst interseprter",token)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log("config",config)
     return config;
   },
   (error) => Promise.reject(error)
@@ -77,9 +81,10 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.log("entering to the response interrsepter")
     const urlpath = error.config?.url || "";
     const role = getRoleFromUrl(urlpath);
-
+    console.log("extracted role from the url path",role)
     if (
       error.response?.status === 403 &&
       error.response?.data?.message

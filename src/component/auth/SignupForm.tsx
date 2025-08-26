@@ -173,7 +173,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
               onClick={() => handleSocialLogin("github")}
             />
             <SocialButton
-              provider="google"
+              provider="linkedin"
               onClick={() => handleSocialLogin("google")}
             />
           </div>

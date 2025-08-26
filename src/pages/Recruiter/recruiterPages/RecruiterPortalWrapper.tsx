@@ -1,16 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import RecruiterPortal from "./RecruiterPortalPage";
+import { recruiterAuthService } from "../../../service/RecruiterAuth";
 
 const RecruiterPortalWrapper: React.FC = () => {
-  const location = useLocation();
-  const isVerified = location.state?.isVerified ?? false;
-  const status = location.state?.status ?? null; // "Pending" | "Active" | null
+  // const location = useLocation();
+  // const isVerified = location.state?.isVerified ?? false;
+  // const status = location.state?.status ?? null;
+  const [isVerified, setisVerified] = useState(false);
+  const [status,setStatus] = useState("")
+
+  const fetchRecruiterProfile = async () => {
+    let response = await recruiterAuthService.getRecruiterProfile();
+    console.log("response from recruiter portal page",response);
+    if(response.success){
+      setisVerified(response.data.isVerified);
+      setStatus(response.data.status);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecruiterProfile();
+  }, []);
 
   console.log("Portal Access =>", { isVerified, status });
 
   const renderOverlay = () => {
-    // Case 1: recruiter never submitted verification
     if (!status && !isVerified) {
       return (
         <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-md z-50">
@@ -32,7 +47,6 @@ const RecruiterPortalWrapper: React.FC = () => {
       );
     }
 
-    // Case 2: recruiter submitted, waiting for admin approval
     if (status === "Pending" && !isVerified) {
       return (
         <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-md z-50">
@@ -51,7 +65,7 @@ const RecruiterPortalWrapper: React.FC = () => {
       );
     }
 
-    return null; // Case 3: isVerified = true (no overlay)
+    return null;
   };
 
   return (

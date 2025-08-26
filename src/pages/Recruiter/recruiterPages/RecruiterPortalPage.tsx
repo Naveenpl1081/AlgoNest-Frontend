@@ -1,42 +1,20 @@
 import React from 'react';
 import { Search, Users, Calendar, Trophy, ArrowRight, User, Crown } from 'lucide-react';
+import RecruiterLayout from '../../../layouts/RecruiterLayouts';
 
 const RecruiterPortal = () => {
+
   return (
+<RecruiterLayout>
+
+
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
      
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         <div className="absolute top-3/4 left-1/2 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-      </div>
-
-     
-      <nav className="relative z-10 bg-slate-800/80 backdrop-blur-md border-b border-slate-700/50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            AlgoNest
-          </div>
-
-          <div className="flex items-center space-x-8">
-            <a href="#" className="text-white font-medium">HOME</a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">Jobs</a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">Interview</a>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-              <User className="w-4 h-4" />
-            </div>
-            <div className="flex items-center space-x-1">
-              <Crown className="w-4 h-4 text-yellow-400" />
-              <span className="text-yellow-400 font-medium text-sm">Premium</span>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      
+      </div>  
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
       
@@ -189,25 +167,8 @@ const RecruiterPortal = () => {
           </div>
         </div>
       </div>
-
-      
-      <footer className="relative z-10 mt-20 border-t border-slate-700/50">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                AlgoNest
-              </div>
-              <p className="text-sm text-gray-400">Unlock the Riddles of Programming</p>
-            </div>
-            <div className="text-center">
-              <div className="w-px h-12 bg-slate-600 mx-auto mb-4"></div>
-              <p className="text-sm text-gray-400">Copyrights reserved</p>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
+    </RecruiterLayout>
   );
 };
 

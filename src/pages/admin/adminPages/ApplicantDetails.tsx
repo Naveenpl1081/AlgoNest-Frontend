@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   Eye,
   Factory,
+  Loader2,
 } from "lucide-react";
 import { Buildimage } from "../../../utils/cloudinary/cloudinary";
 
@@ -26,11 +27,13 @@ export const ApplicantDetails: React.FC = () => {
   const [applicant, setApplicant] = useState<IRecruiter | null>(
     location.state?.applicant || null
   );
+  const user=location.state?.user || null
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [rejectReasonModalOpen, setRejectReasonModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"accept" | "reject" | null>(null);
   const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const openConfirmModal = (type: "accept" | "reject") => {
     setActionType(type);
@@ -50,6 +53,7 @@ export const ApplicantDetails: React.FC = () => {
   const handleConfirmAction = async () => {
     if (!applicant || !actionType) return;
 
+    setIsLoading(true);
     try {
       const res =
         actionType === "accept"
@@ -62,6 +66,7 @@ export const ApplicantDetails: React.FC = () => {
     } catch (error) {
       console.error("Failed to update applicant:", error);
     } finally {
+      setIsLoading(false);
       setConfirmModalOpen(false);
       setRejectReasonModalOpen(false);
       setActionType(null);
@@ -103,7 +108,7 @@ export const ApplicantDetails: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <button
-            onClick={() => navigate("/admin/applicants")}
+            onClick={() => navigate(`/admin/${user}`)}
             className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-200"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -199,26 +204,28 @@ export const ApplicantDetails: React.FC = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-700/50">
-                <button
-                  onClick={() => openConfirmModal("accept")}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl hover:from-emerald-600 hover:to-green-700"
-                >
-                  Accept Applicant
-                </button>
-                <button
-                  onClick={() => openConfirmModal("reject")}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700"
-                >
-                  Reject Applicant
-                </button>
-              </div>
+           
+              {applicant.status === "Pending" && (
+                <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-700/50">
+                  <button
+                    onClick={() => openConfirmModal("accept")}
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl hover:from-emerald-600 hover:to-green-700"
+                  >
+                    Accept Applicant
+                  </button>
+                  <button
+                    onClick={() => openConfirmModal("reject")}
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700"
+                  >
+                    Reject Applicant
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Enhanced ConfirmModal with custom content for rejection reason */}
+        {/* Reject Reason Modal */}
         {rejectReasonModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
             <div className="bg-slate-900 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-700">
@@ -252,7 +259,7 @@ export const ApplicantDetails: React.FC = () => {
           </div>
         )}
 
-        {/* ConfirmModal for final confirmation */}
+        {/* Confirm Modal */}
         <ConfirmModal
           isOpen={confirmModalOpen}
           title={actionType === "accept" ? "Accept Applicant" : "Reject Applicant"}
@@ -261,10 +268,21 @@ export const ApplicantDetails: React.FC = () => {
               ? "Are you sure you want to accept this applicant?"
               : `Are you sure you want to reject this applicant?\n\nReason: ${rejectReason}`
           }
-          confirmText={actionType === "accept" ? "Accept" : "Reject"}
+          confirmText={
+            isLoading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" /> Processing...
+              </span>
+            ) : actionType === "accept" ? (
+              "Accept"
+            ) : (
+              "Reject"
+            )
+          }
           cancelText="Cancel"
           onConfirm={handleConfirmAction}
           onCancel={handleCancel}
+          disableConfirm={isLoading}
         />
 
         {/* Image Preview */}

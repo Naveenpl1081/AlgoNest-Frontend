@@ -1,8 +1,8 @@
 import React from 'react';
-import { Github } from 'lucide-react';
+import { Github, Linkedin } from 'lucide-react';
 
 const SocialButton: React.FC<{
-  provider: 'github' | 'google';
+  provider: 'github' | 'linkedin';
   onClick: () => void;
 }> = ({ provider, onClick }) => {
   const config = {
@@ -10,13 +10,9 @@ const SocialButton: React.FC<{
       icon: <Github size={18} className="text-white" />,
       text: 'GitHub'
     },
-    google: {
-      icon: (
-        <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center text-black text-[10px] font-bold">
-          G
-        </div>
-      ),
-      text: 'Google'
+    linkedin: {
+      icon: <Linkedin size={18} className="text-white" />,
+      text: 'LinkedIn'
     }
   };
 
