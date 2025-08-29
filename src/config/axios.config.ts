@@ -27,21 +27,25 @@ let pendingRequests: ((token: string | null) => void)[] = [];
 export const newAccessToken = async () => {
   try {
     if (isRefresh) {
+      console.log("new accesstoken enterd")
       return new Promise<string | null>((resolve) => {
         pendingRequests.push(resolve);
       });
     }
 
     isRefresh = true;
-
+    console.log("before i reahced the refreshtokenhandler");
     const response = await axiosInstance.get("/api/refresh-token");
-
+    console.log("responseee",response)
     if (response.data?.access_token) {
+     
       const { access_token } = response.data;
 
       Cookies.set("access_token", access_token, { path: "/" });
 
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
+      axiosInstance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${access_token}`;
 
       pendingRequests.forEach((resolve) => resolve(access_token));
       pendingRequests = [];
@@ -61,18 +65,15 @@ export const newAccessToken = async () => {
   }
 };
 
-
-
 axiosInstance.interceptors.request.use(
   (config) => {
-    
-    console.log("entering to the request intersepter")
+    console.log("entering to the request intersepter");
     const token = Cookies.get("access_token");
-    console.log("token attached by the requst interseprter",token)
+    console.log("token attached by the requst interseprter", token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    console.log("config",config)
+    console.log("config", config);
     return config;
   },
   (error) => Promise.reject(error)
@@ -81,14 +82,13 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log("entering to the response interrsepter")
+    console.log("error", error);
+    console.log("entering to the response interrsepter");
     const urlpath = error.config?.url || "";
+    console.log("urlpath",urlpath)
     const role = getRoleFromUrl(urlpath);
-    console.log("extracted role from the url path",role)
-    if (
-      error.response?.status === 403 &&
-      error.response?.data?.message
-    ) {
+    console.log("extracted role from the url path", role);
+    if (error.response?.status === 403 && error.response?.data?.message) {
       console.log("Account is blocked, redirecting to login...");
 
       Cookies.remove(`access_token`);
@@ -103,6 +103,7 @@ axiosInstance.interceptors.response.use(
       !error.config.url.includes("/api/refresh-token")
     ) {
       try {
+        console.log("entering to the refresh token");
         const accessToken = await newAccessToken();
         if (accessToken) {
           const newConfig = { ...error.config };
@@ -126,4 +127,3 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-

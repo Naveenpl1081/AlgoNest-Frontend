@@ -3,6 +3,14 @@ import { LoginFormData, SignupFormData } from "../types/auth.types";
 import { RECRUITER_API } from "../utils/apiRoutes";
 import Cookies from "js-cookie";
 
+interface ApiError {
+  response?: {
+    data?: { message?: string };
+    status?: number;
+  };
+  message?: string;
+}
+
 const signup = async (formData: SignupFormData) => {
   try {
     const response = await axiosInstance.post(
@@ -11,10 +19,11 @@ const signup = async (formData: SignupFormData) => {
     );
     console.log("res", response);
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
     return {
       success: false,
-      message: error?.response?.data?.message || "Something went wrong",
+      message: err.response?.data?.message || "Something went wrong",
     };
   }
 };
@@ -28,10 +37,11 @@ const verifyOtp = async (otp: string, email: string, purpose: string) => {
     });
     console.log("OTP verify response:", response);
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
     return {
       success: false,
-      message: error?.response?.data?.message || "OTP verification failed",
+      message: err.response?.data?.message || "OTP verification failed",
     };
   }
 };
@@ -45,11 +55,12 @@ const login = async (formData: LoginFormData) => {
     );
     console.log("res", response);
     return response.data;
-  } catch (error: any) {
-    if (error.response && error.response.data) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
+    if (err.response?.data?.message) {
       return {
         success: false,
-        message: error.response.data.message || "Login failed",
+        message: err.response.data.message,
       };
     }
     return {
@@ -65,10 +76,11 @@ const resendOtp = async (email: string) => {
       email,
     });
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
     return {
       success: false,
-      message: error.response?.data?.message || "Resend OTP failed.",
+      message: err.response?.data?.message || "Resend OTP failed.",
     };
   }
 };
@@ -79,10 +91,11 @@ const checkUserExists = async (email: string) => {
       email,
     });
     return res.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
     return {
       success: false,
-      message: error?.response?.data?.message || "Error checking user",
+      message: err.response?.data?.message || "Error checking user",
     };
   }
 };
@@ -101,11 +114,11 @@ const resetPassword = async (
     );
 
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
     return {
       success: false,
-      message:
-        error.response?.data?.message || "Server error. Please try again.",
+      message: err.response?.data?.message || "Server error. Please try again.",
     };
   }
 };
@@ -122,12 +135,11 @@ const approveRecruiter = async (formData: FormData) => {
       }
     );
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "Failed to submit company verification",
+      message: err.response?.data?.message || "Failed to submit company verification",
     };
   }
 };
@@ -145,12 +157,10 @@ const getRecruiterProfile= async () => {
     });
 
     return response.data;
-  } catch (error: any) {
-    console.error(
-      "Error fetching recruiter profile:",
-      error?.response?.data || error.message
-    );
-    throw error;
+  } catch (error: unknown) {
+    const err = error as ApiError;
+    console.error("Error fetching recruiter profile:", err.response?.data || err.message);
+    throw err;
   }
 }
 export const recruiterAuthService = {

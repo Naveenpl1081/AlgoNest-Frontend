@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Code, Users, Briefcase, ChevronRight, Star, ArrowRight, Menu, X, Play, Check, MessageCircle, Zap, Target, Trophy, UserPlus, Building2 } from 'lucide-react';
+import { Code, Users, Briefcase, ChevronRight, Star, ArrowRight, Menu, X, Play, Check, MessageCircle, Zap,Trophy, UserPlus, Building2 } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
 const AlgoNestLanding = () => {

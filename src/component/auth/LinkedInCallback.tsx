@@ -76,6 +76,7 @@ const LinkedinCallback: React.FC = () => {
             }, 2000);
           }
         } catch (error) {
+          console.log(error);
           clearInterval(progressInterval);
           setStatus("error");
           setTimeout(() => {

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { SignupFormData, UserLikeRoles } from "../../types/auth.types";
+import { SignupFormData } from "../../types/auth.types";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
-import SocialButton from "../common/SocialButton";
 import { SignupFormProps } from "../../types/auth.types";
 import { useNavigate } from "react-router-dom";
 import { validateSignupForm } from "../../utils/validations/ValidateSignupForm" ;
@@ -63,10 +62,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
       }
     }
   
-    const handleSocialLogin = (provider: "github" | "google") => {
-      console.log(`${provider} login for ${role}`);
-      alert(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login initiated for ${role}`);
-    };
+  
   
     const navigateToLogin = () => {
      navigate(`/${role.toLocaleLowerCase()}/login`)
@@ -142,7 +138,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
               className={isLoading ? "opacity-75 cursor-not-allowed" : ""}
               onClick={(e) => {
                 e.preventDefault();
-                handleSubmit(e as any);
+                handleSubmit(e );
               }}
             >
               {isLoading ? (
@@ -162,21 +158,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-600"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-slate-700 text-gray-400">Or continue with</span>
-            </div>
+          
           </div>
   
-          <div className="mt-6 flex gap-4 justify-center">
-            <SocialButton
-              provider="github"
-              onClick={() => handleSocialLogin("github")}
-            />
-            <SocialButton
-              provider="linkedin"
-              onClick={() => handleSocialLogin("google")}
-            />
-          </div>
         </div>
   
         <div className="mt-8 text-center">

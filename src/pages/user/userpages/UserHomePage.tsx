@@ -2,11 +2,8 @@ import React, { useState } from "react";
 import {
   Search,
   Filter,
-  Calendar,
   ChevronLeft,
   ChevronRight,
-  Bell,
-  User,
   Trophy,
   Clock,
   BarChart3,
@@ -140,7 +137,7 @@ const UserHomePage = () => {
     },
   ];
 
-  const getDifficultyColor = (difficulty: any) => {
+  const getDifficultyColor = (difficulty:any) => {
     switch (difficulty) {
       case "Easy":
         return "text-green-400 bg-green-400/10";

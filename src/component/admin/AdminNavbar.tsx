@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Bell, UserCircle, LogOut } from "lucide-react";
+import { Bell, UserCircle } from "lucide-react";
 import UserLogout from "../user/UserLogout";
 
 export const AdminNavbar: React.FC = () => {

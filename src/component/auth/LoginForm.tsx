@@ -126,12 +126,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
           required
           toggleable
         />
-        <button
-          onClick={() => navigate(`/${role.toLowerCase()}/forgot-password`)}
-          className="text-blue-400 hover:text-blue-300 underline underline-offset-2 decoration-2 transition-all"
-        >
-          Forgot Password?
-        </button>
+
+        {/* Forgot Password - hide for Admin */}
+        {role.toLowerCase() !== "admin" && (
+          <button
+            onClick={() => navigate(`/${role.toLowerCase()}/forgot-password`)}
+            className="text-blue-400 hover:text-blue-300 underline underline-offset-2 decoration-2 transition-all"
+          >
+            Forgot Password?
+          </button>
+        )}
 
         <div className="pt-2">
           <Button
@@ -142,7 +146,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
             className={isLoading ? "opacity-75 cursor-not-allowed" : ""}
             onClick={(e) => {
               e.preventDefault();
-              handleSubmit(e as any);
+              handleSubmit(e);
             }}
           >
             {isLoading ? (
@@ -157,41 +161,47 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
         </div>
       </div>
 
-      <div className="mt-8">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-600"></div>
+      {/* Show social login only if role is User */}
+      {role.toLowerCase() === "user" && (
+        <div className="mt-8">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-600"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-slate-700 text-gray-400">
+                Or continue with
+              </span>
+            </div>
           </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-slate-700 text-gray-400">
-              Or continue with
-            </span>
+
+          <div className="mt-6 flex gap-4 justify-center">
+            <SocialButton
+              provider="github"
+              onClick={() => handleSocialLogin("github")}
+            />
+            <SocialButton
+              provider="linkedin"
+              onClick={() => handleSocialLogin("linkedin")}
+            />
           </div>
         </div>
+      )}
 
-        <div className="mt-6 flex gap-4 justify-center">
-          <SocialButton
-            provider="github"
-            onClick={() => handleSocialLogin("github")}
-          />
-          <SocialButton
-            provider="linkedin"
-            onClick={() => handleSocialLogin("linkedin")}
-          />
+      {/* Sign up link - hide for Admin */}
+      {role.toLowerCase() !== "admin" && (
+        <div className="mt-8 text-center">
+          <p className="text-gray-400">
+            Don’t have an account?{" "}
+            <button
+              onClick={navigateToSignup}
+              className="text-blue-400 hover:text-blue-300 font-medium underline underline-offset-4 decoration-2 hover:decoration-blue-300 transition-all duration-200"
+            >
+              Sign up here
+            </button>
+          </p>
         </div>
-      </div>
-
-      <div className="mt-8 text-center">
-        <p className="text-gray-400">
-          Don’t have an account?{" "}
-          <button
-            onClick={navigateToSignup}
-            className="text-blue-400 hover:text-blue-300 font-medium underline underline-offset-4 decoration-2 hover:decoration-blue-300 transition-all duration-200"
-          >
-            Sign up here
-          </button>
-        </p>
-      </div>
+      )}
     </div>
   );
 };

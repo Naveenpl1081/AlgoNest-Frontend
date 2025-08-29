@@ -1,17 +1,26 @@
 import { axiosInstance } from "../config/axios.config";
 import { LoginFormData, SignupFormData } from "../types/auth.types";
 import { USER_API } from "../utils/apiRoutes";
-import Cookies from "js-cookie";
+
+interface ApiError {
+  response?: {
+    data?: { message?: string };
+    status?: number;
+  };
+  message?: string;
+}
+
 
 const signup = async (formData: SignupFormData) => {
     try {
         const response = await axiosInstance.post(`${USER_API}/signup`, formData);
         console.log("res",response)
         return response.data; 
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const err = error as ApiError;
         return {
           success: false,
-          message: error?.response?.data?.message || "Something went wrong",
+          message: err.response?.data?.message || "Something went wrong",
         };
       }
 };
@@ -21,10 +30,11 @@ const verifyOtp = async (otp: string,email:string,purpose:string) => {
       const response = await axiosInstance.post(`${USER_API}/verify-otp`, { otp ,email,purpose});
       console.log("OTP verify response:", response);
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as ApiError;
       return {
         success: false,
-        message: error?.response?.data?.message || "OTP verification failed",
+        message: err.response?.data?.message || "OTP verification failed",
       };
     }
   };
@@ -35,11 +45,12 @@ const login=async (formData:LoginFormData)=>{
     const response = await axiosInstance.post(`${USER_API}/login`, formData);
     console.log("res",response)
     return response.data
-  } catch (error:any) {
-    if (error.response && error.response.data) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
+    if (err.response?.data?.message) {
       return {
         success: false,
-        message: error.response.data.message || "Login failed",
+        message: err.response.data.message,
       };
     }
     return {
@@ -55,11 +66,12 @@ const githubAuth=async (code: string) => {
     const response = await axiosInstance.post(`${USER_API}/github/callback`, { code });
     console.log("GitHub auth response:", response.data);
     return response.data;
-  } catch (error: any) {
-    if (error.response && error.response.data) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
+    if (err.response?.data?.message) {
       return {
         success: false,
-        message: error.response.data.message || "GitHub login failed",
+        message: err.response.data.message,
       };
     }
     return {
@@ -75,11 +87,12 @@ const linkedinAuth = async (code: string) => {
     const response = await axiosInstance.post(`${USER_API}/linkedin/callback`, { code });
     console.log("LinkedIn auth response:", response.data);
     return response.data;
-  } catch (error: any) {
-    if (error.response && error.response.data) {
+  }  catch (error: unknown) {
+    const err = error as ApiError;
+    if (err.response?.data?.message) {
       return {
         success: false,
-        message: error.response.data.message || "LinkedIn login failed",
+        message: err.response.data.message,
       };
     }
     return {
@@ -95,10 +108,11 @@ const resendOtp = async (email: string) => {
   try {
     const response = await axiosInstance.post(`${USER_API}/resend-otp`, { email });
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
     return {
       success: false,
-      message: error.response?.data?.message || "Resend OTP failed.",
+      message: err.response?.data?.message || "Resend OTP failed.",
     };
   }
 };
@@ -107,10 +121,11 @@ const checkUserExists = async (email: string) => {
   try {
     const res = await axiosInstance.post(`${USER_API}/check-user`, { email });
     return res.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
     return {
       success: false,
-      message: error?.response?.data?.message || "Error checking user",
+      message: err.response?.data?.message || "Error checking user",
     };
   }
 };
@@ -123,10 +138,11 @@ const resetPassword= async (email: string, newPassword: string): Promise<{ succe
     });
 
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
     return {
       success: false,
-      message: error.response?.data?.message || "Server error. Please try again.",
+      message: err.response?.data?.message || "Server error. Please try again.",
     };
   }
 }
@@ -146,9 +162,10 @@ const getUserProfile = async () => {
     const response = await axiosInstance.get(`${USER_API}/user-profile`)
 
     return response.data;
-  } catch (error: any) {
-    console.error("Error fetching user profile:", error?.response?.data || error.message);
-    throw error; 
+  } catch (error: unknown) {
+    const err = error as ApiError;
+    console.error("Error fetching user profile:", err.response?.data || err.message);
+    throw err;
   }
 };
 
@@ -161,11 +178,12 @@ const updateProfile = async (formData: FormData) => {
     });
     console.log("respo",response)
     return response.data;
-  } catch (error: any) {
-    if (error.response && error.response.data) {
+  } catch (error: unknown) {
+    const err = error as ApiError;
+    if (err.response?.data?.message) {
       return {
         success: false,
-        message: error.response.data.message || "Update failed",
+        message: err.response.data.message,
       };
     }
     return {
