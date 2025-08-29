@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Users, Calendar, Trophy, ArrowRight, User, Crown } from 'lucide-react';
+import { Search, Users, Calendar, Trophy, ArrowRight, User } from 'lucide-react';
 import RecruiterLayout from '../../../layouts/RecruiterLayouts';
 
 const RecruiterPortal = () => {

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Settings, Shield } from "lucide-react";
+import { LogOut, Shield } from "lucide-react";
 import RecruiterLayout from "../../../layouts/RecruiterLayouts";
 import { recruiterAuthService } from "../../../service/RecruiterAuth";
 import RecruiterDetails from "../../../component/recruiter/RecruiterDetails";
@@ -30,13 +30,16 @@ const RecruiterProfilePage: React.FC = () => {
     try {
       const data = await recruiterAuthService.getRecruiterProfile();
       console.log("Recruiter data:", data);
-      // Ensure we pass correct structure
       setRecruiterInfo(data.data);
-    } catch (error: any) {
-      console.log("Fetch error:", error);
-      const errorMessage = error?.response?.data?.message;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log("Fetch error:", error.message);
+      }
+    
+      const axiosError = error as { response?: { status?: number; data?: { message?: string } } };
+      const errorMessage = axiosError.response?.data?.message;
       if (
-        error?.response?.status === 403 &&
+        axiosError?.response?.status === 403 &&
         errorMessage === "Invalid role to perform this action"
       ) {
         toast.error("Unauthorized access. Redirecting to login.");

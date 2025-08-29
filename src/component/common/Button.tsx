@@ -1,14 +1,14 @@
-import React from 'react';
-import { ButtonProps } from '../../types/component.types';
+import React from "react";
+import { ButtonProps } from "../../types/component.types";
 
 const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
-  type = 'button',
-  variant = 'primary',
-  size = 'md',
+  type = "button",
+  variant = "primary",
+  size = "md",
   disabled = false,
-  className = ''
+  className = "",
 }) => {
   const getButtonClasses = () => {
     const baseClasses = `
@@ -18,22 +18,24 @@ const Button: React.FC<ButtonProps> = ({
   shadow-lg hover:shadow-xl cursor-pointer
 `;
 
-    
     const variantClasses = {
-      primary: 'bg-slate-900 text-white hover:bg-slate-800 focus:ring-slate-500',
-      secondary: 'bg-slate-600 text-white hover:bg-slate-700 focus:ring-slate-500',
-      outline: 'bg-transparent border-2 border-slate-500 text-slate-300 hover:bg-slate-700 hover:text-white focus:ring-slate-500'
+      primary:
+        "bg-slate-900 text-white hover:bg-slate-800 focus:ring-slate-500",
+      secondary:
+        "bg-slate-600 text-white hover:bg-slate-700 focus:ring-slate-500",
+      outline:
+        "bg-transparent border-2 border-slate-500 text-slate-300 hover:bg-slate-700 hover:text-white focus:ring-slate-500",
     };
-    
+
     const sizeClasses = {
-      sm: 'px-3 py-2 text-sm',
-      md: 'px-6 py-3 text-base',
-      lg: 'px-8 py-4 text-lg w-full'
+      sm: "px-3 py-2 text-sm",
+      md: "px-6 py-3 text-base",
+      lg: "px-8 py-4 text-lg w-full",
     };
-    
+
     return `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
   };
-  
+
   return (
     <button
       type={type}

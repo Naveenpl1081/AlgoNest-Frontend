@@ -38,7 +38,6 @@ export interface LoginProps {
 
 
 
-
 export interface ResetProps {
   role: Role;
   auth: Auth;

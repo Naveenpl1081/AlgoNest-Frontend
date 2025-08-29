@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import RecruiterPortal from "./RecruiterPortalPage";
 import { recruiterAuthService } from "../../../service/RecruiterAuth";
 
@@ -11,7 +10,7 @@ const RecruiterPortalWrapper: React.FC = () => {
   const [status,setStatus] = useState("")
 
   const fetchRecruiterProfile = async () => {
-    let response = await recruiterAuthService.getRecruiterProfile();
+    const response = await recruiterAuthService.getRecruiterProfile();
     console.log("response from recruiter portal page",response);
     if(response.success){
       setisVerified(response.data.isVerified);

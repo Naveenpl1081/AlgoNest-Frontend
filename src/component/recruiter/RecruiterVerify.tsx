@@ -19,7 +19,9 @@ const RecruiterVerify: React.FC<RecruiterVerifyProps> = ({ onSubmit }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
 
@@ -75,7 +77,7 @@ const RecruiterVerify: React.FC<RecruiterVerifyProps> = ({ onSubmit }) => {
       Object.keys(form).forEach((key) => {
         const value = form[key as keyof typeof form];
         if (value) {
-          formData.append(key, value as any);
+          formData.append(key, value);
         }
       });
 
@@ -91,9 +93,10 @@ const RecruiterVerify: React.FC<RecruiterVerifyProps> = ({ onSubmit }) => {
     <div className="min-h-screen bg-slate-900 text-white py-8 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-slate-800 rounded-2xl shadow-xl overflow-hidden">
-     
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6">
-            <h1 className="text-2xl font-bold text-center">Company Verification</h1>
+            <h1 className="text-2xl font-bold text-center">
+              Company Verification
+            </h1>
             <p className="text-blue-100 text-center mt-2">
               Submit your basic company details for admin verification
             </p>
@@ -175,9 +178,10 @@ const RecruiterVerify: React.FC<RecruiterVerifyProps> = ({ onSubmit }) => {
                 } focus:border-blue-500 focus:outline-none`}
               />
 
-             
               <div>
-                <label className="block text-sm font-medium mb-2">Upload Company Documents*</label>
+                <label className="block text-sm font-medium mb-2">
+                  Upload Company Documents*
+                </label>
                 <input
                   type="file"
                   name="document"
@@ -187,17 +191,20 @@ const RecruiterVerify: React.FC<RecruiterVerifyProps> = ({ onSubmit }) => {
                     errors.document ? "border-red-500" : "border-slate-600"
                   } focus:border-blue-500 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white file:cursor-pointer`}
                 />
-                {errors.document && <p className="text-red-400 text-sm mt-1">{errors.document}</p>}
+                {errors.document && (
+                  <p className="text-red-400 text-sm mt-1">{errors.document}</p>
+                )}
               </div>
             </div>
 
-          
             <button
               type="button"
               onClick={handleSubmit}
               disabled={loading}
               className={`w-full py-4 rounded-lg font-semibold text-lg transition duration-200 ${
-                loading ? "bg-slate-600 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                loading
+                  ? "bg-slate-600 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
               }`}
             >
               {loading ? "Submitting..." : "Submit for Verification"}

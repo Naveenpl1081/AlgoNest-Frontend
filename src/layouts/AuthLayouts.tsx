@@ -1,7 +1,6 @@
 import React from "react";
 import { AuthLayoutProps } from "../types/component.types";
 import { motion } from "framer-motion";
-import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children, role, auth }) => {
   const navigate=useNavigate()

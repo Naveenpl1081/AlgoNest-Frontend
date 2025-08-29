@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Github, Linkedin, Mail, UploadCloud, X } from "lucide-react";
+import { Mail, UploadCloud, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { userAuthService } from "../../service/userAuth";
 import { toast } from "react-toastify";
@@ -60,6 +60,7 @@ const ProfileEditModal: React.FC<Props> = ({
         toast.error(response.message || "Update failed.");
       }
     } catch (err) {
+      console.log(err);
       toast.error("Something went wrong!");
     } finally {
       setLoading(false);
@@ -86,7 +87,7 @@ const ProfileEditModal: React.FC<Props> = ({
           transition={{ duration: 0.35, ease: "easeOut" }}
           className="relative bg-gradient-to-br from-slate-800/80 via-slate-900/80 to-slate-800/80 backdrop-blur-xl border border-slate-700/50 text-white rounded-3xl p-8 w-[700px] shadow-2xl"
         >
-          {/* Close Button */}
+         
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition"
@@ -94,12 +95,12 @@ const ProfileEditModal: React.FC<Props> = ({
             <X className="w-5 h-5" />
           </button>
 
-          {/* Title */}
+      
           <h2 className="text-3xl font-bold text-white text-center mb-8">
             Edit Profile
           </h2>
 
-          {/* Profile Image Upload */}
+          
           <div className="flex justify-center mb-8">
             <label className="cursor-pointer relative w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-500 flex items-center justify-center shadow-lg hover:scale-105 transition">
               {image ? (
@@ -120,7 +121,7 @@ const ProfileEditModal: React.FC<Props> = ({
             </label>
           </div>
 
-          {/* Inputs */}
+        
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
               <label className="text-sm text-white mb-1 block">
@@ -170,14 +171,14 @@ const ProfileEditModal: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* Change Password */}
+     
           <div className="flex justify-center mb-6">
             <button className="bg-slate-600/80 hover:bg-slate-700 text-white py-1 px-4 rounded-lg shadow transition">
               Change Password
             </button>
           </div>
 
-          {/* Update Button */}
+       
           <div className="flex justify-center">
             <button
               onClick={handleUpdate}
