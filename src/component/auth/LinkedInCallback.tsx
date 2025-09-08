@@ -18,77 +18,105 @@ const LinkedinCallback: React.FC = () => {
       const code = searchParams.get("code");
       const state = searchParams.get("state");
       const error = searchParams.get("error");
+      const error_description = searchParams.get("error_description");
 
+      // Handle LinkedIn OAuth errors
       if (error) {
-        console.log("LinkedIn error:", error);
+        console.log("LinkedIn error:", error, error_description);
         setStatus("error");
         setTimeout(() => {
-          toast.error("LinkedIn login cancelled or failed");
+          const errorMessage = error_description || "LinkedIn login cancelled or failed";
+          toast.error(errorMessage);
           navigate("/user/login");
         }, 2000);
         return;
       }
 
-      if (code && state) {
-        console.log("LinkedIn sent us code:", code);
+      // Check for required parameters
+      if (!code) {
+        console.log("Missing authorization code from LinkedIn");
+        setStatus("error");
+        setTimeout(() => {
+          toast.error("LinkedIn login failed - missing authorization code");
+          navigate("/user/login");
+        }, 2000);
+        return;
+      }
 
-        const isValidState = linkedinAuthService.verifyState(state);
-        if (!isValidState) {
+      console.log("LinkedIn sent us code:", code);
+      console.log("State parameter:", state);
+
+      // Verify state parameter for security (CSRF protection)
+      if (state) {
+        try {
+          const isValidState = linkedinAuthService.verifyState(state);
+          if (!isValidState) {
+            console.error("State verification failed - potential CSRF attack");
+            setStatus("error");
+            setTimeout(() => {
+              toast.error("Security verification failed - please try again");
+              navigate("/user/login");
+            }, 2000);
+            return;
+          }
+          console.log("State verification passed");
+        } catch (error) {
+          console.error("State verification error:", error);
           setStatus("error");
           setTimeout(() => {
-            toast.error("Invalid state parameter - security error");
+            toast.error("Security verification error - please try again");
             navigate("/user/login");
           }, 2000);
           return;
         }
+      }
 
-        const progressInterval = setInterval(() => {
-          setProgress((prev) => {
-            if (prev >= 90) {
-              clearInterval(progressInterval);
-              return 90;
-            }
-            return prev + Math.random() * 20;
-          });
-        }, 200);
-
-        try {
-          const response = await userAuthService.linkedinAuth(code);
-          clearInterval(progressInterval);
-          setProgress(100);
-
-          if (response.success && response.access_token) {
-            setStatus("success");
-            const inOneHour = new Date(new Date().getTime() + 60 * 60 * 1000);
-            Cookies.set("access_token", response.access_token, {
-              expires: inOneHour,
-            });
-
-            setTimeout(() => {
-              toast.success(response.message || "LinkedIn login successful!");
-              navigate("/user/home");
-            }, 1500);
-          } else {
-            setStatus("error");
-            setTimeout(() => {
-              toast.error(response.message || "LinkedIn login failed");
-              navigate("/user/login");
-            }, 2000);
+      // Start progress animation
+      const progressInterval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
           }
-        } catch (error) {
-          console.log(error);
-          clearInterval(progressInterval);
+          return prev + Math.random() * 20;
+        });
+      }, 200);
+
+      try {
+        // Call backend LinkedIn auth
+        const response = await userAuthService.linkedinAuth(code);
+        console.log("LinkedIn auth response:", response);
+        
+        clearInterval(progressInterval);
+        setProgress(100);
+
+        if (response.success && response.access_token) {
+          setStatus("success");
+          
+          // Set access token cookie (similar to GitHub flow)
+          const inOneHour = new Date(new Date().getTime() + 60 * 60 * 1000);
+          Cookies.set("access_token", response.access_token, {
+            expires: inOneHour,
+          });
+
+          setTimeout(() => {
+            toast.success(response.message || "LinkedIn login successful!");
+            navigate("/user/home", { replace: true });
+          }, 1500);
+        } else {
+          console.error("LinkedIn login failed:", response);
           setStatus("error");
           setTimeout(() => {
-            toast.error("LinkedIn login failed");
-            navigate("/user/login");
+            toast.error(response.message || "LinkedIn login failed");
+            navigate("/user/login", { replace: true });
           }, 2000);
         }
-      } else {
-        console.log("No code received from LinkedIn");
+      } catch (error) {
+        console.error("LinkedIn auth error:", error);
+        clearInterval(progressInterval);
         setStatus("error");
         setTimeout(() => {
-          toast.error("LinkedIn login failed");
+          toast.error("LinkedIn authentication failed - please try again");
           navigate("/user/login");
         }, 2000);
       }
@@ -219,11 +247,10 @@ const LinkedinCallback: React.FC = () => {
                     ? "#064e3b"
                     : status === "error"
                     ? "#7f1d1d"
-                    : "#0A66C2",
+                    : "rgba(10, 102, 194, 0.3)",
                 borderRadius: "9999px",
                 height: "8px",
                 marginBottom: "8px",
-                opacity: 0.3,
               }}
             >
               <div

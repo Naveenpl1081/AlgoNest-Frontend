@@ -5,11 +5,11 @@ import tseslint from "typescript-eslint";
 
 export default [
   js.configs.recommended,
-  ...tseslint.configs.recommended, // ✅ enable TypeScript rules
+  ...tseslint.configs.recommended, 
   {
     files: ["**/*.{ts,tsx,js,jsx}"],
     languageOptions: {
-      parser: tseslint.parser, // ✅ let ESLint parse TypeScript
+      parser: tseslint.parser, 
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
@@ -25,7 +25,7 @@ export default [
       react: { version: "detect" },
     },
     rules: {
-      "react/react-in-jsx-scope": "off", // ✅ React 17+ doesn’t need import React
+      "react/react-in-jsx-scope": "off", 
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
     },

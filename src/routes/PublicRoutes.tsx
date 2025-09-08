@@ -17,6 +17,7 @@ interface PublicRoutesProps {
 
 export const PublicRoute: React.FC<PublicRoutesProps> = ({ Role,redirectTo }) => {
   const token = Cookies.get("access_token");
+  console.log("toke",token)
 
   let role: string | undefined;
 

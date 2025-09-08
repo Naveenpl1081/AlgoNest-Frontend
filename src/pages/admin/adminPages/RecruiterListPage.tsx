@@ -11,25 +11,27 @@ import { DropdownFilter } from "../../../component/common/DropDownFilter";
 import { IRecruiter } from "../../../models/recruiter";
 import { useNavigate } from "react-router-dom";
 
-
 interface ApplicantsListPageProps {
   user: string;
 }
 
-export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({user}) => {
+export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({
+  user,
+}) => {
   const [users, setUsers] = useState<IRecruiter[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<IRecruiter | null>(null);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [companyFilter, setCompanyFilter] = useState("");
   const limit = 5;
 
   useEffect(() => {
     fetchUsers();
-  }, [currentPage, searchTerm, statusFilter]);
+  }, [currentPage, searchTerm, statusFilter, companyFilter]);
 
   const fetchUsers = async () => {
     try {
@@ -38,9 +40,10 @@ export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({user}) => 
         limit,
         search: searchTerm || undefined,
         status: statusFilter || undefined,
+        company: companyFilter || undefined,
       });
 
-      console.log("recruiter",res)
+      console.log("recruiter", res);
 
       if (res.success && res.data) {
         setUsers(res.data.users || []);
@@ -64,7 +67,9 @@ export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({user}) => 
     if (!selectedUser) return;
 
     try {
-      const res = await adminAuthService.toggleRecruiterStatus(selectedUser._id);
+      const res = await adminAuthService.toggleRecruiterStatus(
+        selectedUser._id
+      );
       if (res.success) {
         await fetchUsers();
       } else {
@@ -89,17 +94,19 @@ export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({user}) => 
     {
       key: "status",
       label: "Status",
-      render: (item) => (  <span
-        className={`px-3 py-1 rounded-full text-sm font-medium ${
-          item.status === "Active"
-            ? "bg-green-100 text-green-700"
-            : item.status === "InActive"
-            ? "bg-red-100 text-red-700"
-            : "bg-yellow-100 text-yellow-700"
-        }`}
-      >
-        {item.status}
-      </span>),
+      render: (item) => (
+        <span
+          className={`px-3 py-1 rounded-full text-sm font-medium ${
+            item.status === "Active"
+              ? "bg-green-100 text-green-700"
+              : item.status === "InActive"
+              ? "bg-red-100 text-red-700"
+              : "bg-yellow-100 text-yellow-700"
+          }`}
+        >
+          {item.status}
+        </span>
+      ),
     },
     {
       key: "action",
@@ -119,48 +126,70 @@ export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({user}) => 
       label: "Actions",
       render: (item) => (
         <Button
-        className="bg-blue-500 hover:bg-blue-600 text-white"
+          className="bg-blue-500 hover:bg-blue-600 text-white"
           onClick={() =>
             navigate(`/admin/applicants/${item._id}`, {
-              state: { applicant: item,user: user },
+              state: { applicant: item, user: user },
             })
           }
         >
           View Details
         </Button>
       ),
-    }
+    },
   ];
 
   return (
     <AdminLayout>
       <div className="p-6 space-y-6">
         <h1 className="text-3xl font-bold text-white">Recruiters</h1>
+        <div className="mb-4 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4">
+          <div className="relative w-full md:w-1/3">
+            <Search
+              value={searchTerm}
+              onChange={(val) => {
+                setCurrentPage(1);
+                setSearchTerm(val);
+              }}
+              placeholder="Search by username or email"
+            />
+          </div>
 
-        <div className="w-full sm:w-1/2 lg:w-1/3">
-          <Search
-            value={searchTerm}
-            onChange={(val) => {
-              setCurrentPage(1);
-              setSearchTerm(val);
-            }}
-            placeholder="Search by username or email"
-          />
+          <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+            <div className="w-full sm:w-50">
+              <DropdownFilter
+                label="Filter by Status"
+                value={statusFilter}
+                onChange={(val) => {
+                  setCurrentPage(1);
+                  setStatusFilter(val);
+                }}
+                options={[
+                  { value: "active", label: "Active" },
+                  { value: "blocked", label: "Blocked" },
+                ]}
+              />
+            </div>
+
+            <div className="w-full sm:w-50">
+              <DropdownFilter
+                label="Filter by Company Type"
+                value={companyFilter}
+                onChange={(val) => {
+                  setCurrentPage(1);
+                  setCompanyFilter(val);
+                }}
+                options={[
+                  { value: "Private Limited", label: "Private Limited" },
+                  { value: "Public Limited", label: "Public Limited" },
+                  { value: "LLP", label: "LLP" },
+                  { value: "Proprietorship", label: "Proprietorship" },
+                  { value: "Startup", label: "Startup" },
+                ]}
+              />
+            </div>
+          </div>
         </div>
-
-        <DropdownFilter
-          label="Filter by Status"
-          value={statusFilter}
-          onChange={(val) => {
-            setCurrentPage(1);
-            setStatusFilter(val);
-          }}
-          options={[
-            { value: "active", label: "Active" },
-            { value: "blocked", label: "Blocked" },
-          ]}
-        />
-
         <Table
           data={users}
           columns={columns}

@@ -59,15 +59,17 @@ const getAllRecruiter = async ({
   limit,
   search,
   status,
+  company
 }: {
   page?: number;
   limit?: number;
   search?: string;
   status?: string;
+  company?:string
 } = {}) => {
   try {
     const response = await axiosInstance.get(`${ADMIN_API}/recruiterlist`, {
-      params: { page, limit, search, status },
+      params: { page, limit, search, status,company },
     });
     return response.data;
   } catch (error: unknown) {

@@ -53,7 +53,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, role, auth }) => {
         </div>
       </motion.div>
 
-      <div className="fixed top-0 left-0 w-full flex justify-between items-center p-6 bg-slate-800/80 backdrop-blur-md shadow-xl border-b border-slate-700/50 z-50">
+      {/* <div className="fixed top-0 left-0 w-full flex justify-between items-center p-6 bg-slate-800/80 backdrop-blur-md shadow-xl border-b border-slate-700/50 z-50">
         <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
           <button onClick={()=>navigate("/")}>
           AlgoNest
@@ -70,7 +70,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, role, auth }) => {
             <span className="text-sm font-semibold text-white">{role}</span>
           </div>
         )}
-      </div>
+      </div> */}
 
       
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 text-xs text-gray-500 text-center">
