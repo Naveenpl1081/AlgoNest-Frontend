@@ -8,7 +8,7 @@ import { ConfirmModal } from "../../../component/common/ConfirmModal";
 import Pagination from "../../../component/common/Pagination";
 import { Column } from "../../../types/component.types";
 import { DropdownFilter } from "../../../component/common/DropDownFilter";
-import {IUser} from "../../../models/user"
+import { IUser } from "../../../models/user";
 
 export const UsersListPage: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
@@ -74,7 +74,7 @@ export const UsersListPage: React.FC = () => {
     {
       key: "serial",
       label: "S.No",
-      render: (_item, index) => index + 1, 
+      render: (_item, index) => index + 1,
     },
     { key: "username", label: "Username" },
     { key: "email", label: "Email" },
@@ -115,29 +115,35 @@ export const UsersListPage: React.FC = () => {
       <div className="p-6 space-y-6">
         <h1 className="text-3xl font-bold text-white">Students</h1>
 
-        <div className="w-full sm:w-1/2 lg:w-1/3">
-          <Search
-            value={searchTerm}
-            onChange={(val) => {
-              setCurrentPage(1);
-              setSearchTerm(val);
-            }}
-            placeholder="Search by username or email"
-          />
-        </div>
+        <div className="mb-6 flex flex-col lg:flex-row justify-between items-end gap-4">
+          <div className="relative w-full lg:w-1/3">
+            <Search
+              value={searchTerm}
+              onChange={(val) => {
+                setCurrentPage(1);
+                setSearchTerm(val);
+              }}
+              placeholder="Search by username or email"
+            />
+          </div>
 
-        <DropdownFilter
-          label="Filter by Status"
-          value={statusFilter}
-          onChange={(val) => {
-            setCurrentPage(1);
-            setStatusFilter(val);
-          }}
-          options={[
-            { value: "active", label: "Active" },
-            { value: "blocked", label: "Blocked" },
-          ]}
-        />
+          <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-2/3 lg:justify-end">
+            <div className="w-full sm:w-64">
+              <DropdownFilter
+                label="Filter by Status"
+                value={statusFilter}
+                onChange={(val) => {
+                  setCurrentPage(1);
+                  setStatusFilter(val);
+                }}
+                options={[
+                  { value: "active", label: "Active" },
+                  { value: "blocked", label: "Blocked" },
+                ]}
+              />
+            </div>
+          </div>
+        </div>
 
         <Table
           data={users}

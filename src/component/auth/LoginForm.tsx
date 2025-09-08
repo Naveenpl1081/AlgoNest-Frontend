@@ -161,7 +161,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
         </div>
       </div>
 
-      {/* Show social login only if role is User */}
+ 
       {role.toLowerCase() === "user" && (
         <div className="mt-8">
           <div className="relative">

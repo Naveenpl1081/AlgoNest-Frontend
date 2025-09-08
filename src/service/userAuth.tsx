@@ -83,22 +83,26 @@ const githubAuth=async (code: string) => {
 
 const linkedinAuth = async (code: string) => {
   try {
-    console.log("LinkedIn auth service entered with code:", code);
-    const response = await axiosInstance.post(`${USER_API}/linkedin/callback`, { code });
-    console.log("LinkedIn auth response:", response.data);
-    return response.data;
-  }  catch (error: unknown) {
-    const err = error as ApiError;
-    if (err.response?.data?.message) {
+      console.log("LinkedIn auth service entered with code:", code);
+      
+      const response = await axiosInstance.get(`${USER_API}/linkedin/callback`, {
+          params: { code }
+      });
+      
+      console.log("LinkedIn auth response:", response.data);
+      return response.data;
+  } catch (error: unknown) {
+      const err = error as ApiError;
+      if (err.response?.data?.message) {
+          return {
+              success: false,
+              message: err.response.data.message,
+          };
+      }
       return {
-        success: false,
-        message: err.response.data.message,
+          success: false,
+          message: "Something went wrong. Please try again.",
       };
-    }
-    return {
-      success: false,
-      message: "Something went wrong. Please try again.",
-    };
   }
 };
 
@@ -150,17 +154,7 @@ const resetPassword= async (email: string, newPassword: string): Promise<{ succe
 
 const getUserProfile = async () => {
   try {
-    // const token = Cookies.get("access_token");
-    // if (!token) {
-    //   throw new Error("Access token not found");
-    // }
-    // const response = await axiosInstance.get(`${USER_API}/user-profile`, {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // });
     const response = await axiosInstance.get(`${USER_API}/user-profile`)
-
     return response.data;
   } catch (error: unknown) {
     const err = error as ApiError;
