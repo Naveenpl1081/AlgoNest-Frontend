@@ -35,6 +35,12 @@ export const AdminSidebar: React.FC = () => {
       icon: IdCard,
       path: "/admin/recruiter",
     },
+    {
+      id: "problemcategory",
+      label: "ProblemCategory",
+      icon: Layers,
+      path: "/admin/problemcategory",
+    },
     { id: "problems", label: "Problems", icon: Code, path: "/admin/problems" },
     {
       id: "community",

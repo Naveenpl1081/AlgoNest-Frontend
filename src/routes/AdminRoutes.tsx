@@ -8,6 +8,10 @@ import { UsersListPage } from "../pages/admin/adminPages/UsersListPage";
 import { RecruiterListPage } from "../pages/admin/adminPages/RecruiterListPage";
 import { ApplicantsListPage } from "../pages/admin/adminPages/ApplicantsListPage";
 import { ApplicantDetails } from "../pages/admin/adminPages/ApplicantDetails";
+import { ProblemsListPage } from "../pages/admin/adminPages/ProblemsPage";
+import ProblemAddingPage from "../pages/admin/adminPages/ProblemAddingPage";
+import CategoryAddingPage from "../pages/admin/adminPages/CategoryAddingPage";
+import { CategoriesListPage } from "../pages/admin/adminPages/CategoriesListPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -22,7 +26,11 @@ const AdminRoutes: React.FC = () => {
          <Route path="/admin/recruiter" element={<RecruiterListPage user="recruiter"/>} />
          <Route path="/admin/applicants" element={<ApplicantsListPage user="applicants"/>} />
          <Route path="/admin/applicants/:id" element={<ApplicantDetails/>} />
-
+         <Route path="/admin/problems" element={<ProblemsListPage/>} />
+         <Route path="/admin/addproblems" element={<ProblemAddingPage/>} />
+         <Route path="/admin/problemcategory" element={<CategoriesListPage/>} />
+         <Route path="/admin/addproblemcategory" element={<CategoryAddingPage/>} />
+         <Route path="/admin/editcategory" element={<CategoryAddingPage/>} />
       </Route>
     </Routes>
   );

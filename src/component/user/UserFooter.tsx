@@ -1,4 +1,3 @@
-// components/UserFooter.tsx
 import React from 'react';
 
 const UserFooter: React.FC = () => {

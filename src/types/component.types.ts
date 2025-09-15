@@ -1,17 +1,16 @@
-
 import { Auth, Role } from "./auth.types";
 
 export interface AuthLayoutProps {
   role?: Role;
   children: React.ReactNode;
-  auth?:Auth
+  auth?: Auth;
 }
 
-export interface UserLayoutProps{
-  children:React.ReactNode
+export interface UserLayoutProps {
+  children: React.ReactNode;
 }
-export interface RecruiterLayoutProps{
-  children:React.ReactNode
+export interface RecruiterLayoutProps {
+  children: React.ReactNode;
 }
 
 export interface InputFieldProps {
@@ -22,22 +21,21 @@ export interface InputFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
   required?: boolean;
-  toggleable?: boolean; 
+  toggleable?: boolean;
 }
-
 
 export interface ButtonProps {
   children: React.ReactNode;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  type?: 'button' | 'submit' | 'reset';
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
+  type?: "button" | "submit" | "reset";
+  variant?: "primary" | "secondary" | "outline";
+  size?: "sm" | "md" | "lg";
   disabled?: boolean;
   className?: string;
 }
 
 export interface SocialButtonProps {
-  provider: 'github' | 'google';
+  provider: "github" | "google";
   onClick: () => void;
 }
 
@@ -58,4 +56,72 @@ export interface Column<T> {
   key: keyof T | "action" | "serial";
   label: string;
   render?: (item: T, index: number) => React.ReactNode;
+}
+
+export interface Example {
+  input: string;
+  output: string;
+  explanation: string;
+}
+
+export interface TestCase {
+  input: string;
+  output: string;
+}
+
+export interface Parameter {
+  name: string;
+  type: string;
+}
+
+export interface IProblem {
+  _id:string
+  problemId: string;
+  title: string;
+  description: string;
+  difficulty: string; 
+  tags: string[];
+  category: {
+    _id: string;
+    name: string;
+  };
+  constraints: string[];
+  examples: Example[];
+  testCases: TestCase[];
+  functionName: string; 
+  parameters: Parameter[]; 
+  returnType: string;
+  status: "Active" | "InActive";
+  timeLimit:string;
+  memoryLimit:string;
+  solution: string;
+  starterCode: { [key: string]: string };
+  hints: string[];
+  createdBy: string;
+  isPremium: boolean;
+  visible: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+
+export interface GetProblemsParams {
+  page?: number;
+  limit?: number;
+  difficulty?: string;
+  category?: string;
+  tags?: string[];
+  visible?: boolean;
+  search?: string;
+}
+
+export interface GetProblemsResponse {
+  success: boolean;
+  data?: {
+    problems: IProblem[];
+    total: number;
+    currentPage: number;
+    totalPages: number;
+  };
+  message?: string;
 }
