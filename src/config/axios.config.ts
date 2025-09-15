@@ -82,14 +82,10 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log("error", error);
-    console.log("entering to the response interrsepter");
     const urlpath = error.config?.url || "";
-    console.log("urlpath",urlpath)
     const role = getRoleFromUrl(urlpath);
     console.log("extracted role from the url path", role);
     if (error.response?.status === 403 && error.response?.data?.message) {
-      console.log("Account is blocked, redirecting to login...");
 
       Cookies.remove(`access_token`);
       delete axiosInstance.defaults.headers.common["Authorization"];
@@ -103,7 +99,6 @@ axiosInstance.interceptors.response.use(
       !error.config.url.includes("/api/refresh-token")
     ) {
       try {
-        console.log("entering to the refresh token");
         const accessToken = await newAccessToken();
         if (accessToken) {
           const newConfig = { ...error.config };

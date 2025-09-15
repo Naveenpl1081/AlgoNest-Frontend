@@ -12,6 +12,7 @@ import { UserPrivateRoutes } from './PrivateRoutes'
 import UserProfilePage from '../pages/user/userpages/UserProfilePage'
 import GitHubCallback from '../component/auth/GitHubCallback'
 import LinkedinCallback from '../component/auth/LinkedInCallback'
+import SingleProblemPage from '../pages/user/userpages/SingleProblemPage'
 
 const UserRoutes = () => {
   return (
@@ -31,6 +32,7 @@ const UserRoutes = () => {
         <Route element={<UserPrivateRoutes/>}>
         <Route path="/user/home" element={<UserHomePage/>} />
         <Route path='/user/profile' element={<UserProfilePage/>}/>
+        <Route path="/user/singleproblem/:problemId" element={<SingleProblemPage/>}/>
         </Route>
         
     </Routes>
