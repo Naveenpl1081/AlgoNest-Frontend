@@ -65,9 +65,11 @@ const ProblemAddingComponent: React.FC<ProblemAddingComponentProps> = ({
   };
 
   const addTestCase = () => {
+    // Initialize test case inputs based on current parameters
+    const initialInputs = problemData.parameters.map(() => "");
     onChange("testCases", [
       ...problemData.testCases,
-      { input: "", output: "" },
+      { input: initialInputs, output: "" },
     ]);
   };
 
@@ -81,15 +83,29 @@ const ProblemAddingComponent: React.FC<ProblemAddingComponentProps> = ({
   };
 
   const addParameter = () => {
-    onChange("parameters", [...problemData.parameters, { name: "", type: "" }]);
+    const newParam = { name: "", type: "" };
+    const updatedParams = [...problemData.parameters, newParam];
+    onChange("parameters", updatedParams);
+
+    // Update existing test cases to include new parameter input
+    const updatedTestCases = problemData.testCases.map(testCase => ({
+      ...testCase,
+      input: [...testCase.input, ""]
+    }));
+    onChange("testCases", updatedTestCases);
   };
 
   const removeParameter = (index: number) => {
     if (problemData.parameters.length > 1) {
-      onChange(
-        "parameters",
-        problemData.parameters.filter((_, i) => i !== index)
-      );
+      const updatedParams = problemData.parameters.filter((_, i) => i !== index);
+      onChange("parameters", updatedParams);
+
+      // Update existing test cases to remove the parameter input at the same index
+      const updatedTestCases = problemData.testCases.map(testCase => ({
+        ...testCase,
+        input: testCase.input.filter((_, i) => i !== index)
+      }));
+      onChange("testCases", updatedTestCases);
     }
   };
 
@@ -107,11 +123,27 @@ const ProblemAddingComponent: React.FC<ProblemAddingComponentProps> = ({
   const updateTestCase = (
     index: number,
     field: keyof TestCase,
-    value: string
+    value: string | string[]
   ) => {
     const updatedTestCases = problemData.testCases.map((testCase, i) =>
       i === index ? { ...testCase, [field]: value } : testCase
     );
+    onChange("testCases", updatedTestCases);
+  };
+
+  const updateTestCaseInput = (
+    testCaseIndex: number,
+    parameterIndex: number,
+    value: string
+  ) => {
+    const updatedTestCases = problemData.testCases.map((testCase, i) => {
+      if (i === testCaseIndex) {
+        const updatedInputs = [...testCase.input];
+        updatedInputs[parameterIndex] = value;
+        return { ...testCase, input: updatedInputs };
+      }
+      return testCase;
+    });
     onChange("testCases", updatedTestCases);
   };
 
@@ -132,6 +164,7 @@ const ProblemAddingComponent: React.FC<ProblemAddingComponentProps> = ({
       [language]: code,
     });
   };
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -250,6 +283,7 @@ const ProblemAddingComponent: React.FC<ProblemAddingComponentProps> = ({
           </div>
         </div>
       </section>
+
       <section className="bg-slate-700 rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-4 text-blue-400">Category</h2>
         <DropdownFilter
@@ -502,29 +536,47 @@ const ProblemAddingComponent: React.FC<ProblemAddingComponentProps> = ({
             Add Test Case
           </button>
         </div>
-        {problemData.testCases.map((testCase, index) => (
-          <div key={index} className="mb-4 p-4 bg-slate-600 rounded-lg">
+        {problemData.testCases.map((testCase, testCaseIndex) => (
+          <div key={testCaseIndex} className="mb-4 p-4 bg-slate-600 rounded-lg">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="text-sm font-medium">Test Case {index + 1}</h3>
+              <h3 className="text-sm font-medium">Test Case {testCaseIndex + 1}</h3>
               <button
-                onClick={() => removeTestCase(index)}
+                onClick={() => removeTestCase(testCaseIndex)}
                 className="text-red-400 hover:text-red-300"
               >
                 <Trash2 size={14} />
               </button>
             </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium mb-1">Input</label>
-                <textarea
-                  value={testCase.input}
-                  onChange={(e) =>
-                    updateTestCase(index, "input", e.target.value)
-                  }
-                  className="w-full p-2 rounded bg-slate-700 border border-slate-500 focus:border-blue-400 focus:outline-none font-mono text-xs"
-                  rows={2}
-                />
+                <label className="block text-xs font-medium mb-2">Inputs</label>
+                {problemData.parameters.length > 0 ? (
+                  <div className="space-y-2">
+                    {problemData.parameters.map((param, paramIndex) => (
+                      <div key={paramIndex}>
+                        <label className="block text-xs text-gray-400 mb-1">
+                          {param.name} ({param.type})
+                        </label>
+                        <input
+                          type="text"
+                          value={testCase.input[paramIndex] || ""}
+                          onChange={(e) =>
+                            updateTestCaseInput(testCaseIndex, paramIndex, e.target.value)
+                          }
+                          className="w-full p-2 rounded bg-slate-700 border border-slate-500 focus:border-blue-400 focus:outline-none font-mono text-xs"
+                          placeholder={`Enter value for ${param.name}`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-xs text-gray-400 italic">
+                    Add parameters first to create test case inputs
+                  </div>
+                )}
               </div>
+              
               <div>
                 <label className="block text-xs font-medium mb-1">
                   Expected Output
@@ -532,10 +584,11 @@ const ProblemAddingComponent: React.FC<ProblemAddingComponentProps> = ({
                 <textarea
                   value={testCase.output}
                   onChange={(e) =>
-                    updateTestCase(index, "output", e.target.value)
+                    updateTestCase(testCaseIndex, "output", e.target.value)
                   }
                   className="w-full p-2 rounded bg-slate-700 border border-slate-500 focus:border-blue-400 focus:outline-none font-mono text-xs"
                   rows={2}
+                  placeholder="Expected output"
                 />
               </div>
             </div>

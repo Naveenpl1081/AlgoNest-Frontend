@@ -6,7 +6,6 @@ import { problemService } from "../../../service/problemService";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 
-
 const ProblemAddingPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,7 +14,16 @@ const ProblemAddingPage: React.FC = () => {
 
   const [problemData, setProblemData] = useState<IProblem>(() => {
     if (editProblem) {
-      return editProblem;
+     
+      const migratedProblem = {
+        ...editProblem,
+        testCases: editProblem.testCases.map(tc => ({
+          ...tc,
+          
+          input: Array.isArray(tc.input) ? tc.input : [tc.input]
+        }))
+      };
+      return migratedProblem;
     }
     return {
       _id: "",
@@ -26,7 +34,7 @@ const ProblemAddingPage: React.FC = () => {
       tags: [],
       constraints: [],
       examples: [{ input: "", output: "", explanation: "" }],
-      testCases: [{ input: "", output: "" }],
+      testCases: [{ input: [""], output: "" }], 
       functionName: "",
       parameters: [{ name: "", type: "" }],
       returnType: "",
@@ -35,9 +43,9 @@ const ProblemAddingPage: React.FC = () => {
         name: ""
       },
       solution: "",
-      status:"Active",
-      timeLimit:"",
-      memoryLimit:"",
+      status: "Active",
+      timeLimit: "",
+      memoryLimit: "",
       starterCode: {
         javascript: "",
         python: "",
@@ -60,14 +68,15 @@ const ProblemAddingPage: React.FC = () => {
     }));
   };
 
-  // Validation function
   const validateProblemData = (data: IProblem): string | null => {
     if (!data.title.trim()) return "Title is required";
     if (!data.problemId.trim()) return "Problem ID is required";
     if (!data.description.trim()) return "Description is required";
     if (!data.functionName.trim()) return "Function name is required";
+    if (!data.timeLimit.trim()) return "Time limit is required";
+    if (!data.memoryLimit.trim()) return "Memory limit is required";
     
-    // Check if at least one example is complete
+    
     const validExamples = data.examples.filter(ex => 
       ex.input.trim() && ex.output.trim()
     );
@@ -75,15 +84,26 @@ const ProblemAddingPage: React.FC = () => {
       return "At least one complete example is required";
     }
     
-    // Check if at least one test case is complete
-    const validTestCases = data.testCases.filter(tc => 
-      tc.input.trim() && tc.output.trim()
-    );
+    
+    const validTestCases = data.testCases.filter(tc => {
+      
+      const allInputsFilled = tc.input.every(input => input.trim());
+      const outputFilled = tc.output.trim();
+      return allInputsFilled && outputFilled;
+    });
+    
     if (validTestCases.length === 0) {
       return "At least one complete test case is required";
     }
+  
+    const mismatchedTestCases = data.testCases.filter(
+      tc => tc.input.length !== data.parameters.length
+    );
     
-    // Check if at least one parameter is complete (if any parameters exist)
+    if (mismatchedTestCases.length > 0) {
+      return "Test case input count must match the number of parameters";
+    }
+
     if (data.parameters.length > 0) {
       const validParameters = data.parameters.filter(param => 
         param.name.trim() && param.type.trim()
@@ -93,36 +113,43 @@ const ProblemAddingPage: React.FC = () => {
       }
     }
     
+    
+    if (!data.category || !data.category._id) {
+      return "Category is required";
+    }
+    
     return null;
   };
 
-  // Clean data function
+  
   const cleanProblemData = (data: IProblem): Partial<IProblem> => {
     const cleanedData: Partial<IProblem> = {
       ...data,
-      // Remove _id for new problems or keep it for updates
+      
       ...(editProblem ? { _id: data._id } : {}),
-      // Filter out empty examples
+    
       examples: data.examples.filter(ex => 
         ex.input.trim() && ex.output.trim()
       ),
-      // Filter out empty test cases
-      testCases: data.testCases.filter(tc => 
-        tc.input.trim() && tc.output.trim()
-      ),
-      // Filter out empty parameters
+      
+      testCases: data.testCases.filter(tc => {
+        const allInputsFilled = tc.input.every(input => input.trim());
+        const outputFilled = tc.output.trim();
+        return allInputsFilled && outputFilled;
+      }),
+
       parameters: data.parameters.filter(param => 
         param.name.trim() && param.type.trim()
       ),
-      // Filter out empty tags
+  
       tags: data.tags.filter(tag => tag.trim()),
-      // Filter out empty constraints
+ 
       constraints: data.constraints.filter(constraint => constraint.trim()),
-      // Filter out empty hints
+     
       hints: data.hints.filter(hint => hint.trim()),
     };
 
-    // Remove _id if it's empty string (for new problems)
+   
     if (!editProblem || !cleanedData._id || cleanedData._id === "") {
       delete cleanedData._id;
     }
@@ -132,14 +159,14 @@ const ProblemAddingPage: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      // Validate the problem data
+    
       const validationError = validateProblemData(problemData);
       if (validationError) {
         toast.error(validationError);
         return;
       }
 
-      // Clean the data
+      
       const cleanedData = cleanProblemData(problemData);
       
       let response;

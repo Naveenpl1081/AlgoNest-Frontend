@@ -29,9 +29,27 @@ export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({
   const [companyFilter, setCompanyFilter] = useState("");
   const limit = 5;
 
+  
+
   useEffect(() => {
-    fetchUsers();
+    const delayDebounce = setTimeout(() => {
+      fetchUsers();
+    }, 500); 
+  
+    return () => clearTimeout(delayDebounce);
+  },[currentPage, searchTerm, statusFilter, companyFilter]);
+  
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchUsers();
+    }, 500);
+  
+    return () => {
+      clearTimeout(handler);
+    };
   }, [currentPage, searchTerm, statusFilter, companyFilter]);
+  
 
   const fetchUsers = async () => {
     try {
@@ -71,7 +89,16 @@ export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({
         selectedUser._id
       );
       if (res.success) {
-        await fetchUsers();
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user._id === selectedUser._id
+              ? {
+                  ...user,
+                  status: user.status === "Active" ? "InActive" : "Active",
+                }
+              : user
+          )
+        );
       } else {
         console.error(res.message);
       }
@@ -122,7 +149,7 @@ export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({
       ),
     },
     {
-      key: "action",
+      key: "viewDetails",
       label: "Actions",
       render: (item) => (
         <Button

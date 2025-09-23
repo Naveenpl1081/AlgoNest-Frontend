@@ -33,8 +33,24 @@ export const CategoriesListPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchCategories();
+    const delayDebounce = setTimeout(() => {
+      fetchCategories();
+    }, 500); 
+  
+    return () => clearTimeout(delayDebounce); 
   }, [currentPage, searchTerm]);
+  
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchCategories();
+    }, 500);
+  
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [currentPage, searchTerm]);
+  
 
   const fetchCategories = async () => {
     try {
@@ -66,7 +82,16 @@ export const CategoriesListPage: React.FC = () => {
     try {
       const res = await categoryService.toggleCategoryStatus(selectedCategory._id);
       if (res.success) {
-        await fetchCategories();
+        setCategories((prevCategory) =>
+        prevCategory.map((category) =>
+        category._id === selectedCategory._id
+            ? {
+                ...category,
+                status: category.status === "Active" ? "InActive" : "Active",
+              }
+            : category
+        )
+      );
       } else {
         console.error(res.message);
       }
@@ -106,7 +131,7 @@ export const CategoriesListPage: React.FC = () => {
       ),
     },
     {
-      key: "action",
+      key: "problem",
       label: "Action",
       render: (item) => (
         <Button variant="primary" size="sm" onClick={() => handleEdit(item)}>
