@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import CompilarComponent from "../../../component/user/CompilarComponent";
+import CompilerComponent from "../../../component/user/CompilerComponent";
 import ProblemDetailsComponent from "../../../component/user/ProblemDetailsComponent";
 import ResultComponent from "../../../component/user/ResultComponent";
 import UserLayout from "../../../layouts/UserLayout";
@@ -12,14 +12,13 @@ const SingleProblemPage = () => {
   const [problemData, setProblemData] = useState(null);
   const [testResults, setTestResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isRunning, setIsRunning] = useState(false);
+  const [runError, setRunError] = useState(null);
+  const [overallStatus, setOverallStatus] = useState(null);
   const [leftWidth, setLeftWidth] = useState(50);
-  const [code, setCode] = useState(`var twoSum = function(nums, target) {
-    for(let i = 0; i < nums.length; i++) {
-        for(let j = i + 1; j < nums.length; j++) {
-            if(nums[i] + nums[j] === target) return [i, j]
-        }
-    }
-};`);
+  const [code, setCode] = useState("");
+  const [consoleOutput, setConsoleOutput] = useState("");
+  const [allSubmissions, setAllSubmissions] = useState(null);
 
   useEffect(() => {
     const fetchProblemData = async () => {
@@ -31,6 +30,14 @@ const SingleProblemPage = () => {
         }
         const response = await problemService.getSingleProblem(problemId);
         setProblemData(response.data.data);
+
+        if (response.data.data.starterCode) {
+          const starterCode =
+            response.data.data.starterCode.javascript ||
+            response.data.data.starterCode.python ||
+            code;
+          setCode(starterCode);
+        }
       } catch (error) {
         console.error("Error fetching problem data:", error);
       } finally {
@@ -41,18 +48,103 @@ const SingleProblemPage = () => {
     fetchProblemData();
   }, [problemId]);
 
-  const handleRunCode = async (code:string,problemId:string,language:string) => {
+  
+  
+  const handleRunCode = async (
+    code: string,
+    problemId: string,
+    language: string
+  ) => {
     try {
-      const response=await problemService.runCode({code,problemId,language})
-      console.log(response)
+      setIsRunning(true);
+      setRunError(null);
+      setTestResults([]);
+      setConsoleOutput("");
+
+      const response = await problemService.runCode(code, problemId, language);
+
+      console.log("Run code response:", response);
+
+      if (response && response.success) {
+        const results = response.testResults || [];
+        const status = response.overallStatus || "unknown";
+        const consoleOut = response.consoleOutput || "";
+        console.log("resss", results);
+
+        setTestResults(results);
+        setOverallStatus(status);
+        setConsoleOutput(consoleOut);
+
+        if (status === "passed") {
+          console.log("All tests passed!");
+        }
+      } else {
+        const errorMessage = response?.message || "Code execution failed";
+        setRunError(errorMessage);
+
+        if (response.data?.testResults) {
+          setTestResults(response.testResults);
+          setOverallStatus(response.overallStatus || "failed");
+          setConsoleOutput(response.data?.consoleOutput || "");
+        }
+      }
     } catch (error) {
-      console.error("Failed to run code:", error);
+      console.error(error);
     } finally {
-      setLoading(false);
+      setIsRunning(false);
     }
   };
 
-  const handleSubmitCode = async () => {};
+  const handleSubmitCode = async (
+    code: string,
+    problemId: string,
+    language: string
+  ) => {
+    try {
+      setIsRunning(true);
+      setRunError(null);
+      setTestResults([]);
+      setConsoleOutput("");
+
+      const response = await problemService.submitCode(
+        code,
+        problemId,
+        language
+      );
+
+      console.log("Run code response:", response);
+
+      if (response && response.success) {
+        console.log("hrlrorororo");
+
+        const results = response.testResults || [];
+        const status = response.overallStatus || "unknown";
+        const consoleOut = response.consoleOutput || "";
+        console.log("resss", results);
+
+        setTestResults(results);
+        setOverallStatus(status);
+        setConsoleOutput(consoleOut);
+
+        if (status === "passed") {
+          console.log("All tests passed!");
+        }
+      } else {
+        const errorMessage = response?.message || "Code execution failed";
+        setRunError(errorMessage);
+
+        if (response.data?.testResults) {
+          setTestResults(response.testResults);
+          setOverallStatus(response.overallStatus || "failed");
+          setConsoleOutput(response.data?.consoleOutput || "");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsRunning(false);
+    }
+  };
 
   const handleMouseDown = (e: any) => {
     e.preventDefault();
@@ -90,11 +182,11 @@ const SingleProblemPage = () => {
   return (
     <UserLayout>
       <div className="flex h-screen bg-gray-100">
-        {/* Left Panel - Problem Details */}
         <div style={{ width: `${leftWidth}%` }} className="h-full">
           <ProblemDetailsComponent
             problemData={problemData}
             loading={loading}
+            problemId={problemId}
           />
         </div>
 
@@ -108,17 +200,24 @@ const SingleProblemPage = () => {
           className="flex flex-col h-full"
         >
           <div className="flex-1">
-            <CompilarComponent
+            <CompilerComponent
               problemData={problemData}
               code={code}
               setCode={setCode}
               onRunCode={handleRunCode}
               onSubmitCode={handleSubmitCode}
-              loading={loading}
+              loading={isRunning || loading}
             />
           </div>
+
           <div className="h-64 border-t border-gray-300">
-            <ResultComponent testResults={testResults} loading={loading} />
+            <ResultComponent
+              testResults={testResults}
+              loading={isRunning}
+              overallStatus={overallStatus}
+              error={runError}
+              consoleOutput={consoleOutput}
+            />
           </div>
         </div>
       </div>

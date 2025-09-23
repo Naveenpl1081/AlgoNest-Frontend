@@ -21,8 +21,24 @@ export const UsersListPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const limit = 5;
 
+ 
   useEffect(() => {
-    fetchUsers();
+    const delayDebounce = setTimeout(() => {
+      fetchUsers();
+    }, 500);
+  
+    return () => clearTimeout(delayDebounce); 
+  }, [currentPage, searchTerm, statusFilter]);
+  
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchUsers();
+    }, 500);
+  
+    return () => {
+      clearTimeout(handler);
+    };
   }, [currentPage, searchTerm, statusFilter]);
 
   const fetchUsers = async () => {
@@ -52,13 +68,39 @@ export const UsersListPage: React.FC = () => {
     setModalOpen(true);
   };
 
+  // const handleConfirmToggle = async () => {
+  //   if (!selectedUser) return;
+
+  //   try {
+  //     const res = await adminAuthService.toggleUserStatus(selectedUser._id);
+  //     if (res.success) {
+  //       await fetchUsers();
+  //     } else {
+  //       console.error(res.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to toggle status:", error);
+  //   } finally {
+  //     setModalOpen(false);
+  //     setSelectedUser(null);
+  //   }
+  // };
   const handleConfirmToggle = async () => {
     if (!selectedUser) return;
-
+  
     try {
       const res = await adminAuthService.toggleUserStatus(selectedUser._id);
       if (res.success) {
-        await fetchUsers();
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user._id === selectedUser._id
+              ? {
+                  ...user,
+                  status: user.status === "Active" ? "InActive" : "Active",
+                }
+              : user
+          )
+        );
       } else {
         console.error(res.message);
       }
@@ -69,6 +111,7 @@ export const UsersListPage: React.FC = () => {
       setSelectedUser(null);
     }
   };
+  
 
   const columns: Column<IUser>[] = [
     {

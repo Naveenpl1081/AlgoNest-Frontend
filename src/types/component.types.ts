@@ -53,7 +53,7 @@ export interface TableProps<T> {
   pageSize?: number;
 }
 export interface Column<T> {
-  key: keyof T | "action" | "serial";
+  key: keyof T | "action" | "serial" |"viewDetails" |"problem";
   label: string;
   render?: (item: T, index: number) => React.ReactNode;
 }
@@ -65,7 +65,7 @@ export interface Example {
 }
 
 export interface TestCase {
-  input: string;
+  input: string[];
   output: string;
 }
 
@@ -124,4 +124,60 @@ export interface GetProblemsResponse {
     totalPages: number;
   };
   message?: string;
+}
+
+export interface ProblemDetailsProps {
+  problemData: IProblem | null;
+  loading: boolean;
+  problemId?:string
+}
+
+export interface CompilerComponentProps {
+  problemData: IProblem | null;
+  code: string;
+  setCode: React.Dispatch<React.SetStateAction<string>>; 
+  onRunCode: (code: string, problemId: string, language: string) => Promise<void>;
+  onSubmitCode: (code: string, problemId: string, language: string) => Promise<void>;
+  loading: boolean;
+}
+
+export interface RunDocument extends Document {
+  userId: string;
+  problemId: string;
+  language: string;
+  code: string;
+  testResults: Array<{
+    caseNumber: number;
+    input: string;
+    output: string;
+    expected: string;
+    passed: boolean;
+    error?: string;
+    executionTime?: number;
+    memoryUsed?: number;
+  }>;
+  overallStatus: 'passed' | 'failed' | 'error';
+  createdAt: Date;
+}
+
+
+export interface TestResult {
+  caseNumber: number;
+  input: string;
+  output: string;
+  expected: string;
+  passed: boolean;
+  status?: 'accepted' | 'wrong_answer' | 'timeout' | 'memory_exceeded' | 'runtime_error' | 'system_error' | 'network_error' | 'execution_error' | 'rejected';
+  executionTime?: number;
+  memoryUsed?: number;
+  error?: string;
+  consoleOutput?: string;
+}
+
+export interface ResultComponentProps {
+  testResults: TestResult[];
+  loading: boolean;
+  overallStatus: 'passed' | 'failed' | 'error' | null;
+  error: string | null;
+  consoleOutput: string | null;
 }

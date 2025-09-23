@@ -25,8 +25,22 @@ export const ProblemsListPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchProblems();
-  }, [currentPage, searchTerm, difficultyFilter, tagFilter,statusFilter]);
+    const delayDebounce = setTimeout(() => {
+      fetchProblems();
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [currentPage, searchTerm, difficultyFilter, tagFilter, statusFilter]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchProblems();
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [currentPage, searchTerm, difficultyFilter, tagFilter, statusFilter]);
 
   const fetchProblems = async () => {
     try {
@@ -70,7 +84,16 @@ export const ProblemsListPage: React.FC = () => {
     try {
       const res = await problemService.toggleProblemStatus(selectedProblem._id);
       if (res.success) {
-        await fetchProblems();
+        setProblems((prevProblems) =>
+          prevProblems.map((problems) =>
+            problems._id === selectedProblem._id
+              ? {
+                  ...problems,
+                  status: problems.status === "Active" ? "InActive" : "Active",
+                }
+              : problems
+          )
+        );
       } else {
         console.error(res.message);
       }
@@ -121,7 +144,7 @@ export const ProblemsListPage: React.FC = () => {
       ),
     },
     {
-      key: "action",
+      key: "problem",
       label: "Action",
       render: (item: IProblem) => (
         <Button
@@ -172,25 +195,22 @@ export const ProblemsListPage: React.FC = () => {
                 ]}
               />
             </div>
-         
-       
 
-        <div className="w-full sm:w-50">
-
-        <DropdownFilter
-          label="Filter by Status"
-          value={statusFilter}
-          onChange={(val) => {
-            setCurrentPage(1);
-            setStatusFilter(val);
-          }}
-          options={[
-            { value: "active", label: "Active" },
-            { value: "blocked", label: "Blocked" },
-          ]}
-        />
-        </div>
-        </div>
+            <div className="w-full sm:w-50">
+              <DropdownFilter
+                label="Filter by Status"
+                value={statusFilter}
+                onChange={(val) => {
+                  setCurrentPage(1);
+                  setStatusFilter(val);
+                }}
+                options={[
+                  { value: "active", label: "Active" },
+                  { value: "blocked", label: "Blocked" },
+                ]}
+              />
+            </div>
+          </div>
         </div>
 
         <Table
