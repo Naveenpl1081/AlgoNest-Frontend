@@ -83,6 +83,7 @@ const getAllRecruiter = async ({
 
 const toggleUserStatus = async (userId: string) => {
   try {
+    console.log("userIddd",userId)
     const response = await axiosInstance.patch(`${ADMIN_API}/users/${userId}`);
     return response.data;
   } catch (error: unknown) {

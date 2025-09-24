@@ -89,6 +89,7 @@ export const UsersListPage: React.FC = () => {
     if (!selectedUser) return;
   
     try {
+      console.log("selected",selectedUser)
       const res = await adminAuthService.toggleUserStatus(selectedUser._id);
       if (res.success) {
         setUsers((prevUsers) =>
