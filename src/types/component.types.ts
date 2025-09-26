@@ -53,7 +53,7 @@ export interface TableProps<T> {
   pageSize?: number;
 }
 export interface Column<T> {
-  key: keyof T | "action" | "serial" |"viewDetails" |"problem";
+  key: keyof T | "action" | "serial" | "viewDetails" | "problem";
   label: string;
   render?: (item: T, index: number) => React.ReactNode;
 }
@@ -75,11 +75,11 @@ export interface Parameter {
 }
 
 export interface IProblem {
-  _id:string
+  _id: string;
   problemId: string;
   title: string;
   description: string;
-  difficulty: string; 
+  difficulty: string;
   tags: string[];
   category: {
     _id: string;
@@ -88,12 +88,12 @@ export interface IProblem {
   constraints: string[];
   examples: Example[];
   testCases: TestCase[];
-  functionName: string; 
-  parameters: Parameter[]; 
+  functionName: string;
+  parameters: Parameter[];
   returnType: string;
   status: "Active" | "InActive";
-  timeLimit:string;
-  memoryLimit:string;
+  timeLimit: string;
+  memoryLimit: string;
   solution: string;
   starterCode: { [key: string]: string };
   hints: string[];
@@ -103,7 +103,6 @@ export interface IProblem {
   createdAt: string;
   updatedAt: string;
 }
-
 
 export interface GetProblemsParams {
   page?: number;
@@ -129,15 +128,23 @@ export interface GetProblemsResponse {
 export interface ProblemDetailsProps {
   problemData: IProblem | null;
   loading: boolean;
-  problemId?:string
+  problemId?: string;
 }
 
 export interface CompilerComponentProps {
   problemData: IProblem | null;
   code: string;
-  setCode: React.Dispatch<React.SetStateAction<string>>; 
-  onRunCode: (code: string, problemId: string, language: string) => Promise<void>;
-  onSubmitCode: (code: string, problemId: string, language: string) => Promise<void>;
+  setCode: React.Dispatch<React.SetStateAction<string>>;
+  onRunCode: (
+    code: string,
+    problemId: string,
+    language: string
+  ) => Promise<void>;
+  onSubmitCode: (
+    code: string,
+    problemId: string,
+    language: string
+  ) => Promise<void>;
   loading: boolean;
 }
 
@@ -156,10 +163,9 @@ export interface RunDocument extends Document {
     executionTime?: number;
     memoryUsed?: number;
   }>;
-  overallStatus: 'passed' | 'failed' | 'error';
+  overallStatus: "passed" | "failed" | "error";
   createdAt: Date;
 }
-
 
 export interface TestResult {
   caseNumber: number;
@@ -167,7 +173,16 @@ export interface TestResult {
   output: string;
   expected: string;
   passed: boolean;
-  status?: 'accepted' | 'wrong_answer' | 'timeout' | 'memory_exceeded' | 'runtime_error' | 'system_error' | 'network_error' | 'execution_error' | 'rejected';
+  status?:
+    | "accepted"
+    | "wrong_answer"
+    | "timeout"
+    | "memory_exceeded"
+    | "runtime_error"
+    | "system_error"
+    | "network_error"
+    | "execution_error"
+    | "rejected";
   executionTime?: number;
   memoryUsed?: number;
   error?: string;
@@ -177,7 +192,14 @@ export interface TestResult {
 export interface ResultComponentProps {
   testResults: TestResult[];
   loading: boolean;
-  overallStatus: 'passed' | 'failed' | 'error' | null;
+  overallStatus: "passed" | "failed" | "error" | null;
   error: string | null;
   consoleOutput: string | null;
+  onExplainError?: (data: {
+    code: string;
+    errorLog: string;
+    problemStatement: string;
+  }) => void;
+  userCode?: string;
+  problemData?: any;
 }

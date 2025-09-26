@@ -4,8 +4,11 @@ import CompilerComponent from "../../../component/user/CompilerComponent";
 import ProblemDetailsComponent from "../../../component/user/ProblemDetailsComponent";
 import ResultComponent from "../../../component/user/ResultComponent";
 import UserLayout from "../../../layouts/UserLayout";
+import { aiAuthService } from "../../../service/AiService";
 import { problemService } from "../../../service/problemService";
 import ShimmerSkeleton from "../../../utils/shimmer/ProblemShimmer";
+import AIExplanationPopup from "../../../component/user/AIExplanationPopup";
+import AILoadingModal from "../../../utils/AILoadingModal";
 
 const SingleProblemPage = () => {
   const { problemId } = useParams();
@@ -19,6 +22,19 @@ const SingleProblemPage = () => {
   const [code, setCode] = useState("");
   const [consoleOutput, setConsoleOutput] = useState("");
   const [allSubmissions, setAllSubmissions] = useState(null);
+
+
+  const [aiPopup, setAiPopup] = useState({
+    isOpen: false,
+    explanation: "",
+    suggestedFix: "",
+    codeExample: "",
+    confidence: 0,
+    aiProvider: ""
+  });
+
+
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     const fetchProblemData = async () => {
@@ -48,8 +64,71 @@ const SingleProblemPage = () => {
     fetchProblemData();
   }, [problemId]);
 
+  const handleExplainError = async ({
+    code,
+    errorLog,
+    problemStatement,
+  }: any) => {
+    try {
+      setAiLoading(true); 
+
+      const response = await aiAuthService.getExplainedError({
+        code,
+        errorLog,
+        problemStatement,
+      });
+
+      console.log("Full response:", response);
+
+      if (response.success && response.data) {
+        const { explanation, suggestedFix, codeExample, confidence, aiProvider } = response.data;
+        
+       
+        setAiPopup({
+          isOpen: true,
+          explanation,
+          suggestedFix,
+          codeExample: codeExample || "",
+          confidence,
+          aiProvider
+        });
+      } else {
+        alert("❌ AI could not generate an explanation. Please try again.");
+      }
+    } catch (err: any) {
+      console.error("AI Debugger Error:", err);
+      const errorResponse = err.response?.data?.error;
+      
+      if (errorResponse) {
+        alert(errorResponse.userMessage || errorResponse.message);
+        
+        if (errorResponse.retryAfter) {
+          setTimeout(() => {
+            alert(`⏰ You can try again now!`);
+          }, errorResponse.retryAfter * 1000);
+        }
+      } else if (err.code === 'NETWORK_ERROR') {
+        alert("🌐 Network connection failed. Please check your internet connection and try again.");
+      } else {
+        alert("❌ Something went wrong. Please try again or contact support if the problem persists.");
+      }
+    } finally {
+      setAiLoading(false); 
+    }
+  };
+
   
-  
+  const closeAiPopup = () => {
+    setAiPopup({
+      isOpen: false,
+      explanation: "",
+      suggestedFix: "",
+      codeExample: "",
+      confidence: 0,
+      aiProvider: ""
+    });
+  };
+
   const handleRunCode = async (
     code: string,
     problemId: string,
@@ -217,10 +296,27 @@ const SingleProblemPage = () => {
               overallStatus={overallStatus}
               error={runError}
               consoleOutput={consoleOutput}
+              userCode={code}
+              problemData={problemData}
+              onExplainError={handleExplainError}
             />
           </div>
         </div>
       </div>
+
+      
+      <AILoadingModal isOpen={aiLoading} />
+
+    
+      <AIExplanationPopup
+        isOpen={aiPopup.isOpen}
+        onClose={closeAiPopup}
+        explanation={aiPopup.explanation}
+        suggestedFix={aiPopup.suggestedFix}
+        codeExample={aiPopup.codeExample}
+        confidence={aiPopup.confidence}
+        aiProvider={aiPopup.aiProvider}
+      />
     </UserLayout>
   );
 };
