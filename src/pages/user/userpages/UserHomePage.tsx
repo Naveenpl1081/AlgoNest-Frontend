@@ -74,35 +74,7 @@ const UserHomePage = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-slate-700/40 border border-slate-600/30 rounded-xl p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-400 text-sm">Problems Solved</p>
-                    <p className="text-2xl font-bold text-white">47</p>
-                  </div>
-                  <BarChart3 className="w-8 h-8 text-blue-400" />
-                </div>
-              </div>
-              <div className="bg-slate-700/40 border border-slate-600/30 rounded-xl p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-400 text-sm">Acceptance Rate</p>
-                    <p className="text-2xl font-bold text-white">73%</p>
-                  </div>
-                  <Trophy className="w-8 h-8 text-green-400" />
-                </div>
-              </div>
-              <div className="bg-slate-700/40 border border-slate-600/30 rounded-xl p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-400 text-sm">Current Streak</p>
-                    <p className="text-2xl font-bold text-white">12</p>
-                  </div>
-                  <Clock className="w-8 h-8 text-purple-400" />
-                </div>
-              </div>
-            </div>
+            
 
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
               <div className="relative flex-1">

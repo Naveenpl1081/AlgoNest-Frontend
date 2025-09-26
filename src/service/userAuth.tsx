@@ -163,6 +163,16 @@ const getUserProfile = async () => {
   }
 };
 
+const getUserStats= async () => {
+  try {
+    const response = await axiosInstance.get(`${USER_API}/user-stats`);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching user stats:", error.response?.data || error.message);
+    throw error;
+  }
+}
+
 const updateProfile = async (formData: FormData) => {
   try {
     const response = await axiosInstance.patch(`${USER_API}/edit-profile`, formData, {
@@ -199,5 +209,6 @@ export const userAuthService = {
   getUserProfile,
   updateProfile,
   githubAuth,
-  linkedinAuth
+  linkedinAuth,
+  getUserStats
 };

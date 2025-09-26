@@ -6,6 +6,7 @@ import {
   XCircle,
   AlertTriangle,
   Terminal,
+  Sparkles,
 } from "lucide-react";
 import { ResultComponentProps } from "../../types/component.types";
 
@@ -15,6 +16,9 @@ const ResultComponent: React.FC<ResultComponentProps> = ({
   overallStatus,
   error,
   consoleOutput,
+  onExplainError,
+  userCode,
+  problemData,
 }) => {
   const [activeTab, setActiveTab] = useState("testcases");
 
@@ -128,35 +132,30 @@ const ResultComponent: React.FC<ResultComponentProps> = ({
     }
   };
 
-  // Clean console output formatting
   const formatConsoleOutput = (output: string) => {
     if (!output) return "";
 
-    // Split by double newlines and clean each part
     const parts = output.split("\n\n");
     const cleanedParts = parts
       .map((part) => part.trim())
       .filter((part) => part.length > 0)
       .map((part) => {
-        // For arrays and simple objects, keep them on one line
         try {
           if (part.startsWith("[") && part.endsWith("]")) {
             const parsed = JSON.parse(part);
-            return JSON.stringify(parsed); // Single line for arrays
+            return JSON.stringify(parsed);
           }
           if (part.startsWith("{") && part.endsWith("}")) {
             const parsed = JSON.parse(part);
-            // Only format objects with multiple properties on multiple lines
+
             const keys = Object.keys(parsed);
             if (keys.length <= 2) {
-              return JSON.stringify(parsed); // Single line for simple objects
+              return JSON.stringify(parsed);
             } else {
-              return JSON.stringify(parsed, null, 2); // Multi-line for complex objects
+              return JSON.stringify(parsed, null, 2);
             }
           }
-        } catch (e) {
-          // Not JSON, return as is
-        }
+        } catch (e) {}
         return part;
       });
 
@@ -258,6 +257,35 @@ const ResultComponent: React.FC<ResultComponentProps> = ({
               : `${passedTests}/${totalTests} test cases passed`}
           </div>
         </div>
+        {overallStatus !== "passed" && (
+          <button
+            onClick={() =>
+              onExplainError &&
+              onExplainError({
+                code: userCode || "",
+                errorLog: error || consoleOutput || "",
+                problemStatement: problemData?.description || "",
+              })
+            }
+            className="fixed top-3 right-108 z-50 group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 hover:from-purple-700 hover:via-blue-700 hover:to-purple-700 rounded-full text-white font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-purple-500/20"
+            style={{
+              background: "linear-gradient(135deg, #8B5CF6, #3B82F6, #8B5CF6)",
+              backgroundSize: "200% 200%",
+              animation: "gradient-shift 3s ease infinite",
+            }}
+          >
+            <Sparkles className="w-4 h-4 animate-pulse" />
+            <span className="text-sm font-semibold">AI Explain</span>
+            <div className="absolute inset-0 rounded-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </button>
+        )}
+        <style>{`
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+`}</style>
 
         <div className="space-y-3">
           {testResults.map((result: any, index: number) => {
@@ -356,10 +384,8 @@ const ResultComponent: React.FC<ResultComponentProps> = ({
   };
 
   const renderConsole = () => {
-    // Get the primary console output (avoid duplication)
     let primaryConsoleOutput = consoleOutput || "";
 
-    // If no primary console output, get from first test result
     if (!primaryConsoleOutput && testResults && testResults.length > 0) {
       primaryConsoleOutput = testResults[0].consoleOutput || "";
     }
@@ -369,7 +395,6 @@ const ResultComponent: React.FC<ResultComponentProps> = ({
     return (
       <div className="p-4">
         <div className="bg-gray-900 border border-gray-600 rounded-lg overflow-hidden">
-          {/* Console Header */}
           <div className="bg-gray-800 px-4 py-2 border-b border-gray-600">
             <div className="flex items-center gap-2">
               <Terminal className="w-4 h-4 text-blue-400" />
@@ -385,7 +410,6 @@ const ResultComponent: React.FC<ResultComponentProps> = ({
             </div>
           </div>
 
-          {/* Console Content */}
           <div className="p-4 font-mono text-sm min-h-32 max-h-64 overflow-y-auto bg-gray-900">
             {loading ? (
               <div className="text-blue-300 flex items-center gap-2">
@@ -508,7 +532,6 @@ const ResultComponent: React.FC<ResultComponentProps> = ({
 
   return (
     <div className="h-full bg-gray-900 text-white flex flex-col">
-      {/* Tab Navigation */}
       <div className="bg-gray-800 border-b border-gray-600">
         <div className="flex">
           {tabs.map((tab) => (
@@ -541,7 +564,6 @@ const ResultComponent: React.FC<ResultComponentProps> = ({
         </div>
       </div>
 
-      {/* Tab Content */}
       <div className="flex-1 overflow-y-auto">
         {activeTab === "testcases" && renderTestCases()}
         {activeTab === "console" && renderConsole()}
