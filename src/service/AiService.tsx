@@ -36,6 +36,23 @@ const getExplainedError = async ({
   }
 };
 
+
+const getAiAnswers = async (data: {
+  message: string;
+  conversationHistory: Array<{ role: string; content: string }>;
+  language?: string;
+  topic?: string;
+}) => {
+  try {
+    const response = await axiosInstance.post(`${USER_API}/aitutor`, data);
+    return response.data;
+  } catch (error: any) {
+    console.error('AI Service Error:', error);
+    throw error.response?.data || error;
+  }
+};
+
 export const aiAuthService = {
   getExplainedError,
+  getAiAnswers
 };

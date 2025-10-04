@@ -10,6 +10,8 @@ import RecruiterPortalWrapper from "../pages/Recruiter/recruiterPages/RecruiterP
 import { RecruiterPrivateRoutes } from "./PrivateRoutes";
 import { RecruiterPublicRoutes } from "./PublicRoutes";
 import RecruiterProfilePage from "../pages/Recruiter/recruiterPages/RecruiterProfilePage";
+import JobPostPage from "../pages/Recruiter/recruiterPages/JobPostPage";
+import ViewAllJobs from "../pages/Recruiter/recruiterPages/ViewAllJobs";
 
 const RecruiterRoutes:React.FC = () => {
   return (
@@ -32,6 +34,8 @@ const RecruiterRoutes:React.FC = () => {
         <Route path="/recruiter/portal" element={<RecruiterPortalWrapper />} />
         <Route path='/recruiter/verify' element={<RecruiterVerifyPage/>}/>
         <Route path='/recruiter/profile' element={<RecruiterProfilePage/>}/>
+        <Route path="/recruiter/jobpost" element={<JobPostPage/>}/>
+        <Route path="/recruiter/viewallpost" element={<ViewAllJobs/>}/>
       </Route>
     </Routes>
   );
