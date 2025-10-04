@@ -93,7 +93,7 @@ const SingleProblemPage = () => {
           aiProvider
         });
       } else {
-        alert("❌ AI could not generate an explanation. Please try again.");
+        alert(" AI could not generate an explanation. Please try again.");
       }
     } catch (err: any) {
       console.error("AI Debugger Error:", err);
@@ -108,9 +108,9 @@ const SingleProblemPage = () => {
           }, errorResponse.retryAfter * 1000);
         }
       } else if (err.code === 'NETWORK_ERROR') {
-        alert("🌐 Network connection failed. Please check your internet connection and try again.");
+        alert("Network connection failed. Please check your internet connection and try again.");
       } else {
-        alert("❌ Something went wrong. Please try again or contact support if the problem persists.");
+        alert("Something went wrong. Please try again or contact support if the problem persists.");
       }
     } finally {
       setAiLoading(false); 

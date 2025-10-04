@@ -13,6 +13,9 @@ import UserProfilePage from '../pages/user/userpages/UserProfilePage'
 import GitHubCallback from '../component/auth/GitHubCallback'
 import LinkedinCallback from '../component/auth/LinkedInCallback'
 import SingleProblemPage from '../pages/user/userpages/SingleProblemPage'
+import AiTutorPage from '../pages/user/userpages/AiTutorPage'
+import AiChatPage from '../pages/user/userpages/AiChatPage'
+import JobDetailsPage from '../pages/user/userpages/JobDetailsPage'
 
 const UserRoutes = () => {
   return (
@@ -33,6 +36,9 @@ const UserRoutes = () => {
         <Route path="/user/home" element={<UserHomePage/>} />
         <Route path='/user/profile' element={<UserProfilePage/>}/>
         <Route path="/user/singleproblem/:problemId" element={<SingleProblemPage/>}/>
+        <Route path='/user/ai-tutor' element={<AiTutorPage/>}/>
+        <Route path='/user/ai-chat' element={<AiChatPage/>}/>
+        <Route path='/user/jobdetails' element={<JobDetailsPage/>}/>
         </Route>
         
     </Routes>

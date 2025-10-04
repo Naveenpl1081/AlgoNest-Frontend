@@ -1,6 +1,7 @@
 import { axiosInstance } from "../config/axios.config";
 import { LoginFormData, SignupFormData } from "../types/auth.types";
 import { RECRUITER_API } from "../utils/apiRoutes";
+import { JobPost } from "../models/recruiter";
 import Cookies from "js-cookie";
 
 interface ApiError {
@@ -163,6 +164,8 @@ const getRecruiterProfile= async () => {
     throw err;
   }
 }
+
+
 export const recruiterAuthService = {
   signup,
   verifyOtp,
@@ -171,5 +174,6 @@ export const recruiterAuthService = {
   checkUserExists,
   resetPassword,
   approveRecruiter,
-  getRecruiterProfile
+  getRecruiterProfile,
+
 };
