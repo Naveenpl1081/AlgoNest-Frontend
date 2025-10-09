@@ -58,7 +58,7 @@ const JobDetailsPage = () => {
   const limit = 6;
 
   useEffect(() => {
-    fetchJobs(); //
+    fetchJobs(); 
   }, [currentPage, filters.status, filters.workmode, filters.worktime]);
 
   const fetchJobs = async () => {
@@ -163,7 +163,6 @@ const JobDetailsPage = () => {
             </div>
           </div>
 
-         
           <div className="mb-4">
             <p className="text-gray-400">
               Showing{" "}
@@ -175,7 +174,6 @@ const JobDetailsPage = () => {
             </p>
           </div>
 
-       
           {jobs.length === 0 ? (
             <div className="bg-slate-700/30 backdrop-blur-md rounded-lg border border-slate-600/50 p-12 text-center">
               <Briefcase className="w-16 h-16 mx-auto mb-4 text-gray-500" />
@@ -187,21 +185,20 @@ const JobDetailsPage = () => {
               </p>
             </div>
           ) : (
-            <div  className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {jobs.map((job) => (
                 <JobCard
                   key={job._id}
                   job={job}
                   showActions={true}
-                  onApply={(jobId) => {
-                    console.log("Applying for job:", jobId);
+                  onApply={() => {
+                    navigate('/user/job-apply', { state: { job } });
                   }}
                 />
               ))}
             </div>
           )}
 
-         
           {pagination.pages > 1 && (
             <Pagination
               currentPage={pagination.page}

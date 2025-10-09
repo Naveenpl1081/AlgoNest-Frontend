@@ -1,5 +1,5 @@
 import { axiosInstance } from "../config/axios.config";
-import { ApiError, JobPost } from "../models/recruiter";
+import { ApiError, IJobApplicationPayload, JobPost } from "../models/recruiter";
 import { RECRUITER_API, USER_API } from "../utils/apiRoutes";
 
 const postJobDetails = async (jobDetails: JobPost): Promise<any> => {
@@ -18,8 +18,7 @@ const postJobDetails = async (jobDetails: JobPost): Promise<any> => {
     );
     throw err;
   }
-};
-
+}
 const updateJobDetails = async (
   jobId: string,
   jobDetails: JobPost
@@ -106,4 +105,5 @@ export const jobService = {
   updateJobDetails,
   toggleJobStatus,
   jobDetails,
+  
 };

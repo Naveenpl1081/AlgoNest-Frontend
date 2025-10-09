@@ -10,7 +10,8 @@ const UserNavbar: React.FC = () => {
     { path: "/user/ai-tutor", label: "AI Tutor" },
     { path: "/user/home", label: "Problems" },
     { path: "/user/community", label: "Community" },
-    { path: "/user/jobdetails", label: "Interview" },
+    { path: "/user/jobdetails", label: "JobPost" },
+    { path: "/user/interview", label: "Interview" },
   ];
 
   return (

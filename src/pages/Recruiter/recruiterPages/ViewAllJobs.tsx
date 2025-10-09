@@ -230,7 +230,7 @@ const ViewAllJobs = () => {
             </div>
           </div>
 
-          {/* Results Count */}
+         
           <div className="mb-4">
             <p className="text-gray-400">
               Showing{" "}
@@ -242,7 +242,7 @@ const ViewAllJobs = () => {
             </p>
           </div>
 
-          {/* Job Cards */}
+     
           {jobs.length === 0 ? (
             <div className="bg-slate-700/30 backdrop-blur-md rounded-lg border border-slate-600/50 p-12 text-center">
               <Briefcase className="w-16 h-16 mx-auto mb-4 text-gray-500" />
@@ -269,7 +269,7 @@ const ViewAllJobs = () => {
             </div>
           )}
 
-          {/* Pagination */}
+          
           {pagination.pages > 1 && (
             <Pagination
               currentPage={pagination.page}
@@ -279,7 +279,7 @@ const ViewAllJobs = () => {
           )}
         </div>
       </div>
-      {/* Job Details Modal */}
+  
       {selectedJob && (
         <JobDetailsModal job={selectedJob} onClose={handleCloseModal} />
       )}

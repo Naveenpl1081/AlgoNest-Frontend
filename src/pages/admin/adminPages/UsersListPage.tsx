@@ -68,23 +68,6 @@ export const UsersListPage: React.FC = () => {
     setModalOpen(true);
   };
 
-  // const handleConfirmToggle = async () => {
-  //   if (!selectedUser) return;
-
-  //   try {
-  //     const res = await adminAuthService.toggleUserStatus(selectedUser._id);
-  //     if (res.success) {
-  //       await fetchUsers();
-  //     } else {
-  //       console.error(res.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to toggle status:", error);
-  //   } finally {
-  //     setModalOpen(false);
-  //     setSelectedUser(null);
-  //   }
-  // };
   const handleConfirmToggle = async () => {
     if (!selectedUser) return;
   

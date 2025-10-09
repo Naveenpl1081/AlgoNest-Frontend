@@ -16,6 +16,9 @@ import SingleProblemPage from '../pages/user/userpages/SingleProblemPage'
 import AiTutorPage from '../pages/user/userpages/AiTutorPage'
 import AiChatPage from '../pages/user/userpages/AiChatPage'
 import JobDetailsPage from '../pages/user/userpages/JobDetailsPage'
+import JobApplyPage from '../pages/user/userpages/JobApplyPage'
+
+import UsersViewAllInterviews from '../pages/user/userpages/InterviewListPage'
 
 const UserRoutes = () => {
   return (
@@ -39,6 +42,8 @@ const UserRoutes = () => {
         <Route path='/user/ai-tutor' element={<AiTutorPage/>}/>
         <Route path='/user/ai-chat' element={<AiChatPage/>}/>
         <Route path='/user/jobdetails' element={<JobDetailsPage/>}/>
+        <Route path='/user/job-apply' element={<JobApplyPage/>}/>
+        <Route path='/user/interview' element={<UsersViewAllInterviews/>}/>
         </Route>
         
     </Routes>
