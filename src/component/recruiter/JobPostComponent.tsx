@@ -373,7 +373,7 @@ const JobPostComponent: React.FC<JobPostComponentProps> = ({
               )}
             </div>
 
-            {/* Submit Button */}
+           
             <div className="flex justify-center pt-6">
               <button
                 type="submit"

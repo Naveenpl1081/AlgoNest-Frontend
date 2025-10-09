@@ -1,9 +1,12 @@
-// components/RecruiterNavbar.tsx
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Layers, User } from "lucide-react";
 
 const RecruiterNavbar: React.FC = () => {
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
+
   return (
     <div className="bg-slate-800/90 backdrop-blur-md border-b border-slate-700/50 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4">
@@ -18,19 +21,54 @@ const RecruiterNavbar: React.FC = () => {
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               to="/recruiter/portal"
-              className="text-white hover:text-indigo-400 transition-colors font-medium border-b-2 border-indigo-500 pb-1"
+              className={`pb-1 transition-colors font-medium ${
+                isActive("/recruiter/portal")
+                  ? "text-white border-b-2 border-indigo-500"
+                  : "text-gray-300 hover:text-white"
+              }`}
             >
               Home
             </Link>
+
             <Link
               to="/recruiter/viewallpost"
-              className="text-gray-300 hover:text-white transition-colors"
+              className={`pb-1 transition-colors font-medium ${
+                isActive("/recruiter/viewallpost")
+                  ? "text-white border-b-2 border-indigo-500"
+                  : "text-gray-300 hover:text-white"
+              }`}
             >
               Jobs
             </Link>
+
+            <Link
+              to="/recruiter/Applicants"
+              className={`pb-1 transition-colors font-medium ${
+                isActive("/recruiter/Applicants")
+                  ? "text-white border-b-2 border-indigo-500"
+                  : "text-gray-300 hover:text-white"
+              }`}
+            >
+              Applicants
+            </Link>
+
+            <Link
+              to="/recruiter/shortlist"
+              className={`pb-1 transition-colors font-medium ${
+                isActive("/recruiter/shortlist")
+                  ? "text-white border-b-2 border-indigo-500"
+                  : "text-gray-300 hover:text-white"
+              }`}
+            >
+              Shortlist
+            </Link>
             <Link
               to="/recruiter/interview"
-              className="text-gray-300 hover:text-white transition-colors"
+              className={`pb-1 transition-colors font-medium ${
+                isActive("/recruiter/interview")
+                  ? "text-white border-b-2 border-indigo-500"
+                  : "text-gray-300 hover:text-white"
+              }`}
             >
               Interview
             </Link>

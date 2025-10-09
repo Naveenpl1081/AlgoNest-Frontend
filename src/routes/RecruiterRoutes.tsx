@@ -12,6 +12,9 @@ import { RecruiterPublicRoutes } from "./PublicRoutes";
 import RecruiterProfilePage from "../pages/Recruiter/recruiterPages/RecruiterProfilePage";
 import JobPostPage from "../pages/Recruiter/recruiterPages/JobPostPage";
 import ViewAllJobs from "../pages/Recruiter/recruiterPages/ViewAllJobs";
+import ApplicantsPage from "../pages/Recruiter/recruiterPages/ApplicantsPage";
+import ShortlistCandidatesPage from "../pages/Recruiter/recruiterPages/ShortListCandidatesPage";
+import ViewAllInterviews from "../pages/Recruiter/recruiterPages/InterviewScheduledPage";
 
 const RecruiterRoutes:React.FC = () => {
   return (
@@ -36,6 +39,9 @@ const RecruiterRoutes:React.FC = () => {
         <Route path='/recruiter/profile' element={<RecruiterProfilePage/>}/>
         <Route path="/recruiter/jobpost" element={<JobPostPage/>}/>
         <Route path="/recruiter/viewallpost" element={<ViewAllJobs/>}/>
+        <Route path="/recruiter/applicants" element={<ApplicantsPage/>}/>
+        <Route path="/recruiter/shortlist" element={<ShortlistCandidatesPage/>}/>
+        <Route path="/recruiter/interview" element={<ViewAllInterviews/>}/>
       </Route>
     </Routes>
   );
