@@ -88,7 +88,7 @@ const UsersViewAllInterviews = () => {
   const handleStartCall = (roomId: string) => {
     console.log("Starting video call for room:", roomId);
   
-    navigate(`/user/interview/call/${roomId}`);
+    navigate(`/user/interviewcall/${roomId}`);
   };
 
   const handleCancelInterview = (interviewId: string) => {

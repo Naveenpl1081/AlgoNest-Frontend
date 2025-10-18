@@ -3,7 +3,7 @@ import { Briefcase, Video, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import RecruiterLayout from "../../../layouts/RecruiterLayouts";
 import { interviewService } from "../../../service/interviewService";
-
+import InterviewScheduleModal from "../../../component/recruiter/InterviewScheduleModal";
 import { JobsLoadingSkeleton } from "../../../utils/shimmer/JobCardSkeleton";
 import InterviewCard from "../../../component/recruiter/InterviewCard";
 
@@ -38,6 +38,13 @@ interface PaginationData {
   hasPrevPage: boolean;
 }
 
+interface InterviewData {
+  date: string;
+  time: string;
+  duration: number;
+  instructions: string;
+}
+
 const ViewAllInterviews = () => {
   const navigate = useNavigate();
   const [interviews, setInterviews] = useState<Interview[]>([]);
@@ -54,6 +61,8 @@ const ViewAllInterviews = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'cancel' | 'reschedule' | null>(null);
   const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [rescheduleApplicant, setRescheduleApplicant] = useState<any>(null);
   const limit = 6;
 
   useEffect(() => {
@@ -86,8 +95,7 @@ const ViewAllInterviews = () => {
 
   const handleStartCall = (roomId: string) => {
     console.log("Starting video call for room:", roomId);
-  
-    navigate(`/recruiter/interview/call/${roomId}`);
+    navigate(`/recruiter/interviewcall/${roomId}`);
   };
 
   const handleCancelInterview = (interviewId: string) => {
@@ -99,18 +107,73 @@ const ViewAllInterviews = () => {
 
   const handleRescheduleInterview = (interviewId: string) => {
     const interview = interviews.find(i => i._id === interviewId);
-    setSelectedInterview(interview || null);
-    setModalType('reschedule');
-    setShowModal(true);
+    if (interview) {
+      setSelectedInterview(interview);
+      
+      // Convert interview data to applicant format for the modal
+      const candidateInfo = typeof interview.candidateId === 'object' 
+        ? interview.candidateId 
+        : { username: 'Candidate', email: '' };
+      
+      setRescheduleApplicant({
+        name: candidateInfo.username,
+        email: candidateInfo.email,
+      });
+      
+      setShowRescheduleModal(true);
+    }
+  };
+
+  const handleRescheduleSubmit = async (data: InterviewData) => {
+    if (!selectedInterview) return;
+
+    try {
+      const response = await interviewService.rescheduleInterview({
+        interviewId: selectedInterview._id,
+        date: data.date,
+        time: data.time,
+        duration: data.duration,
+        instructions: data.instructions,
+      });
+
+      console.log("Reschedule response:", response);
+
+     
+      setInterviews(prevInterviews =>
+        prevInterviews.map(interview =>
+          interview._id === selectedInterview._id
+            ? {
+                ...interview,
+                date: data.date,
+                time: data.time,
+                duration: data.duration,
+                instructions: data.instructions,
+              }
+            : interview
+        )
+      );
+
+ 
+      setShowRescheduleModal(false);
+      setSelectedInterview(null);
+      setRescheduleApplicant(null);
+
+     
+      alert("Interview rescheduled successfully!");
+      
+    } catch (error) {
+      console.error("Error rescheduling interview:", error);
+      alert("Failed to reschedule interview. Please try again.");
+    }
   };
 
   const confirmCancel = async () => {
     if (selectedInterview) {
       try {
-        
         console.log("Cancelling interview:", selectedInterview._id);
         
-       
+        await interviewService.cancelInterview(selectedInterview._id);
+        
         setInterviews(prevInterviews =>
           prevInterviews.map(interview =>
             interview._id === selectedInterview._id
@@ -124,16 +187,6 @@ const ViewAllInterviews = () => {
       } catch (error) {
         console.error("Error cancelling interview:", error);
       }
-    }
-  };
-
-  const confirmReschedule = () => {
-    if (selectedInterview) {
-      console.log("Rescheduling interview:", selectedInterview._id);
-      setShowModal(false);
-      setSelectedInterview(null);
-      // TODO: Navigate to reschedule page
-      // navigate(`/recruiter/interview/reschedule/${selectedInterview._id}`);
     }
   };
 
@@ -193,7 +246,6 @@ const ViewAllInterviews = () => {
           </div>
 
           {interviews.length === 0 ? (
-            // Empty State
             <div className="bg-slate-800/30 backdrop-blur-md rounded-lg border border-slate-700/50 p-12 text-center">
               <Briefcase className="w-16 h-16 mx-auto mb-4 text-gray-500" />
               <h3 className="text-xl font-semibold text-gray-400 mb-2">
@@ -204,7 +256,6 @@ const ViewAllInterviews = () => {
               </p>
             </div>
           ) : (
-            // Interviews Grid
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {interviews.map((interview) => (
                 <InterviewCard
@@ -219,7 +270,6 @@ const ViewAllInterviews = () => {
             </div>
           )}
 
-          {/* Pagination */}
           {pagination.pages > 1 && (
             <Pagination
               currentPage={pagination.page}
@@ -229,7 +279,7 @@ const ViewAllInterviews = () => {
           )}
         </div>
 
-        {/* Confirmation Modal */}
+        {/* Cancel Confirmation Modal */}
         {showModal && selectedInterview && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-slate-800 rounded-xl border border-slate-700 p-6 max-w-md w-full shadow-2xl">
@@ -239,12 +289,10 @@ const ViewAllInterviews = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white mb-2">
-                    {modalType === 'cancel' ? 'Cancel Interview?' : 'Reschedule Interview?'}
+                    Cancel Interview?
                   </h3>
                   <p className="text-gray-400 text-sm">
-                    {modalType === 'cancel'
-                      ? 'Are you sure you want to cancel this interview? This action cannot be undone.'
-                      : 'Are you sure you want to reschedule this interview? The candidate will be notified.'}
+                    Are you sure you want to cancel this interview? This action cannot be undone.
                   </p>
                 </div>
               </div>
@@ -269,19 +317,27 @@ const ViewAllInterviews = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={modalType === 'cancel' ? confirmCancel : confirmReschedule}
-                  className={`flex-1 px-4 py-2.5 rounded-lg font-medium transition-colors ${
-                    modalType === 'cancel'
-                      ? 'bg-red-600 hover:bg-red-500 text-white'
-                      : 'bg-blue-600 hover:bg-blue-500 text-white'
-                  }`}
+                  onClick={confirmCancel}
+                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-lg font-medium transition-colors"
                 >
-                  {modalType === 'cancel' ? 'Confirm Cancel' : 'Confirm Reschedule'}
+                  Confirm Cancel
                 </button>
               </div>
             </div>
           </div>
         )}
+
+        {/* Reschedule Modal */}
+        <InterviewScheduleModal
+          isOpen={showRescheduleModal}
+          applicant={rescheduleApplicant}
+          onClose={() => {
+            setShowRescheduleModal(false);
+            setSelectedInterview(null);
+            setRescheduleApplicant(null);
+          }}
+          onSchedule={handleRescheduleSubmit}
+        />
       </div>
     </RecruiterLayout>
   );

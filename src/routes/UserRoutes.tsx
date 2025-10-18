@@ -19,6 +19,7 @@ import JobDetailsPage from '../pages/user/userpages/JobDetailsPage'
 import JobApplyPage from '../pages/user/userpages/JobApplyPage'
 
 import UsersViewAllInterviews from '../pages/user/userpages/InterviewListPage'
+import CandidateVideoCallPage from '../pages/user/userpages/VideoCallPage'
 
 const UserRoutes = () => {
   return (
@@ -44,6 +45,8 @@ const UserRoutes = () => {
         <Route path='/user/jobdetails' element={<JobDetailsPage/>}/>
         <Route path='/user/job-apply' element={<JobApplyPage/>}/>
         <Route path='/user/interview' element={<UsersViewAllInterviews/>}/>
+        <Route path="/user/interviewcall/:roomId" element={<CandidateVideoCallPage />} />
+
         </Route>
         
     </Routes>
