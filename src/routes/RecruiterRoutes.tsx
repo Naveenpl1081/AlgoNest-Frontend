@@ -16,6 +16,8 @@ import ApplicantsPage from "../pages/Recruiter/recruiterPages/ApplicantsPage";
 import ShortlistCandidatesPage from "../pages/Recruiter/recruiterPages/ShortListCandidatesPage";
 import ViewAllInterviews from "../pages/Recruiter/recruiterPages/InterviewScheduledPage";
 
+import RecruiterVideoCallPage from "../pages/Recruiter/recruiterPages/InterviewVideoCallPage";
+
 const RecruiterRoutes:React.FC = () => {
   return (
     <Routes>
@@ -42,6 +44,7 @@ const RecruiterRoutes:React.FC = () => {
         <Route path="/recruiter/applicants" element={<ApplicantsPage/>}/>
         <Route path="/recruiter/shortlist" element={<ShortlistCandidatesPage/>}/>
         <Route path="/recruiter/interview" element={<ViewAllInterviews/>}/>
+        <Route path="/recruiter/interviewcall/:roomId" element={<RecruiterVideoCallPage/>} />
       </Route>
     </Routes>
   );

@@ -5,9 +5,10 @@ export interface ValidationResult {
   errors: string[];
 }
 
-export const validateJobPost = (formData: JobPostFormData): ValidationResult => {
+export const validateJobPost = (
+  formData: JobPostFormData
+): ValidationResult => {
   const errors: string[] = [];
-
 
   if (!formData.role || !formData.role.trim()) {
     errors.push("Role is required.");
@@ -17,7 +18,6 @@ export const validateJobPost = (formData: JobPostFormData): ValidationResult => 
     errors.push("Role must not exceed 100 characters.");
   }
 
-  
   if (!formData.jobLocation || !formData.jobLocation.trim()) {
     errors.push("Job location is required.");
   } else if (formData.jobLocation.trim().length < 2) {
@@ -26,7 +26,6 @@ export const validateJobPost = (formData: JobPostFormData): ValidationResult => 
     errors.push("Job location must not exceed 100 characters.");
   }
 
-
   const validWorkTimes = ["full-time", "part-time", "contract", "internship"];
   if (!formData.workTime || !formData.workTime.trim()) {
     errors.push("Work time is required.");
@@ -34,14 +33,12 @@ export const validateJobPost = (formData: JobPostFormData): ValidationResult => 
     errors.push("Please select a valid work time option.");
   }
 
-
   const validWorkModes = ["remote", "on-site", "hybrid"];
   if (!formData.workMode || !formData.workMode.trim()) {
     errors.push("Work mode is required.");
   } else if (!validWorkModes.includes(formData.workMode.toLowerCase())) {
     errors.push("Please select a valid work mode option.");
   }
-
 
   if (!formData.minExperience) {
     errors.push("Minimum experience is required.");
@@ -58,15 +55,29 @@ export const validateJobPost = (formData: JobPostFormData): ValidationResult => 
     }
   }
 
-  
-  const hasMinSalary = formData.minSalary ;
-  const hasMaxSalary = formData.maxSalary ;
+
+  // if (!formData.requirements) {
+  //   errors.push("minimum one requirement required");
+  // } else{
+  //   for(let val of formData.requirements){
+  //     if(val.length>30){
+  //       errors.push("maximum 30 length only");
+  //     }
+  //   }
+  // }
+
+  const hasMinSalary = formData.minSalary;
+  const hasMaxSalary = formData.maxSalary;
 
   if (hasMinSalary || hasMaxSalary) {
     if (hasMinSalary && !hasMaxSalary) {
-      errors.push("Maximum salary is required when minimum salary is provided.");
+      errors.push(
+        "Maximum salary is required when minimum salary is provided."
+      );
     } else if (!hasMinSalary && hasMaxSalary) {
-      errors.push("Minimum salary is required when maximum salary is provided.");
+      errors.push(
+        "Minimum salary is required when maximum salary is provided."
+      );
     } else if (hasMinSalary && hasMaxSalary) {
       const minSal = parseFloat(formData.minSalary);
       const maxSal = parseFloat(formData.maxSalary);
@@ -99,20 +110,26 @@ export const validateJobPost = (formData: JobPostFormData): ValidationResult => 
     }
   }
 
-
   if (formData.requirements && formData.requirements.length > 0) {
     formData.requirements.forEach((req, index) => {
       if (!req || !req.trim()) {
-        errors.push(`Requirement ${index + 1} is empty. Please remove empty entries.`);
+        errors.push(
+          `Requirement ${index + 1} is empty. Please remove empty entries.`
+        );
       } else if (req.trim().length < 5) {
-        errors.push(`Requirement ${index + 1} is too short (minimum 5 characters).`);
+        errors.push(
+          `Requirement ${index + 1} is too short (minimum 5 characters).`
+        );
       } else if (req.trim().length > 500) {
-        errors.push(`Requirement ${index + 1} is too long (maximum 500 characters).`);
+        errors.push(
+          `Requirement ${index + 1} is too long (maximum 500 characters).`
+        );
       }
     });
 
-    
-    const uniqueReqs = new Set(formData.requirements.map(r => r.trim().toLowerCase()));
+    const uniqueReqs = new Set(
+      formData.requirements.map((r) => r.trim().toLowerCase())
+    );
     if (uniqueReqs.size < formData.requirements.length) {
       errors.push("Duplicate requirements found. Please remove duplicates.");
     }
@@ -122,22 +139,30 @@ export const validateJobPost = (formData: JobPostFormData): ValidationResult => 
     }
   }
 
- 
   if (formData.responsibilities && formData.responsibilities.length > 0) {
     formData.responsibilities.forEach((resp, index) => {
       if (!resp || !resp.trim()) {
-        errors.push(`Responsibility ${index + 1} is empty. Please remove empty entries.`);
+        errors.push(
+          `Responsibility ${index + 1} is empty. Please remove empty entries.`
+        );
       } else if (resp.trim().length < 5) {
-        errors.push(`Responsibility ${index + 1} is too short (minimum 5 characters).`);
+        errors.push(
+          `Responsibility ${index + 1} is too short (minimum 5 characters).`
+        );
       } else if (resp.trim().length > 500) {
-        errors.push(`Responsibility ${index + 1} is too long (maximum 500 characters).`);
+        errors.push(
+          `Responsibility ${index + 1} is too long (maximum 500 characters).`
+        );
       }
     });
 
-   
-    const uniqueResps = new Set(formData.responsibilities.map(r => r.trim().toLowerCase()));
+    const uniqueResps = new Set(
+      formData.responsibilities.map((r) => r.trim().toLowerCase())
+    );
     if (uniqueResps.size < formData.responsibilities.length) {
-      errors.push("Duplicate responsibilities found. Please remove duplicates.");
+      errors.push(
+        "Duplicate responsibilities found. Please remove duplicates."
+      );
     }
 
     if (formData.responsibilities.length > 20) {
@@ -145,10 +170,13 @@ export const validateJobPost = (formData: JobPostFormData): ValidationResult => 
     }
   }
 
-  
-  if ((!formData.requirements || formData.requirements.length === 0) &&
-      (!formData.responsibilities || formData.responsibilities.length === 0)) {
-    errors.push("Please add at least one requirement or responsibility to make the job post more informative.");
+  if (
+    (!formData.requirements || formData.requirements.length === 0) &&
+    (!formData.responsibilities || formData.responsibilities.length === 0)
+  ) {
+    errors.push(
+      "Please add at least one requirement or responsibility to make the job post more informative."
+    );
   }
 
   return {
