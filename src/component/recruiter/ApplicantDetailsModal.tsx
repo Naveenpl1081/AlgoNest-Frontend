@@ -3,7 +3,6 @@ import { IJobApplication } from "../../models/recruiter";
 import { Buildimage } from "../../utils/cloudinary/cloudinary";
 import Button from "../common/Button";
 
-
 interface ApplicantDetailsModalProps {
   isOpen: boolean;
   applicant: IJobApplication | null;
@@ -37,12 +36,9 @@ const ApplicantDetailsModal: React.FC<ApplicantDetailsModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[95vh] border border-gray-700">
-        {/* Header */}
         <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-8 py-6 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-white">
-              Applicant Details
-            </h2>
+            <h2 className="text-2xl font-bold text-white">Applicant Details</h2>
             <p className="text-indigo-100 text-sm mt-1">
               Complete profile information
             </p>
@@ -67,10 +63,8 @@ const ApplicantDetailsModal: React.FC<ApplicantDetailsModalProps> = ({
           </button>
         </div>
 
-        {/* Content */}
         <div className="overflow-y-auto flex-1 px-8 py-6">
           <div className="space-y-6">
-            {/* Personal Information */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-5 border border-gray-700">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
                 <svg
@@ -114,7 +108,6 @@ const ApplicantDetailsModal: React.FC<ApplicantDetailsModalProps> = ({
               </div>
             </div>
 
-            {/* Education */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-5 border border-gray-700">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
                 <svg
@@ -154,7 +147,6 @@ const ApplicantDetailsModal: React.FC<ApplicantDetailsModalProps> = ({
               </div>
             </div>
 
-            {/* Work Experience */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-5 border border-gray-700">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
                 <svg
@@ -193,7 +185,6 @@ const ApplicantDetailsModal: React.FC<ApplicantDetailsModalProps> = ({
               </div>
             </div>
 
-            {/* Skills */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-5 border border-gray-700">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
                 <svg
@@ -221,7 +212,6 @@ const ApplicantDetailsModal: React.FC<ApplicantDetailsModalProps> = ({
               </div>
             </div>
 
-            {/* Links & Profiles */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-5 border border-gray-700">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
                 <svg
@@ -301,7 +291,6 @@ const ApplicantDetailsModal: React.FC<ApplicantDetailsModalProps> = ({
               </div>
             </div>
 
-            {/* Documents */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-5 border border-gray-700">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
                 <svg
@@ -460,7 +449,6 @@ const ApplicantDetailsModal: React.FC<ApplicantDetailsModalProps> = ({
               </div>
             </div>
 
-            {/* About */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-5 border border-gray-700">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
                 <svg
@@ -481,7 +469,6 @@ const ApplicantDetailsModal: React.FC<ApplicantDetailsModalProps> = ({
               </p>
             </div>
 
-            {/* Status */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-5 border border-gray-700">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
                 <svg
@@ -508,7 +495,6 @@ const ApplicantDetailsModal: React.FC<ApplicantDetailsModalProps> = ({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="bg-gray-800/80 backdrop-blur-sm px-8 py-4 flex justify-end gap-3 border-t border-gray-700">
           <Button
             variant="secondary"

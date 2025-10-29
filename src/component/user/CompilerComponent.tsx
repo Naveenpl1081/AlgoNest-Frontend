@@ -380,7 +380,6 @@ const CompilerComponent: React.FC<CompilerComponentProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Run Button */}
           <button
             onClick={handleRun}
             disabled={isRunning || isSubmitting}
@@ -408,7 +407,6 @@ const CompilerComponent: React.FC<CompilerComponentProps> = ({
             )}
           </button>
 
-         
           <button
             onClick={handleSubmit}
             disabled={isRunning || isSubmitting}

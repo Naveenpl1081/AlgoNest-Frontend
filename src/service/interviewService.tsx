@@ -99,10 +99,66 @@ const cancelInterview = async (
 };
 
 
+const finishInterview = async (
+  interviewId: string
+) => {
+  try {
+    const response = await axiosInstance.patch(
+      `${RECRUITER_API}/finishedinterview/${interviewId}`, 
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error rescheduling interview:", error);
+    throw error;
+  }
+};
+
+const getAllCompleteInterviews=async (params: {
+  page: number;
+  limit: number;
+  search?:string
+}): Promise<any>=>{
+  try {
+    const response = await axiosInstance.get(`${RECRUITER_API}/completeinterviews`, {
+      params: {
+        page: params.page,
+        limit: params.limit,
+        search:params.search
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching completed interviews:', error);
+    throw error;
+  }
+} 
+const sendInterviewResult=async(data: {
+  interviewId: string;
+  candidateEmail: string;
+  candidateName: string;
+  result: string;
+  message: string;
+}): Promise<{
+  success: boolean;
+  message: string;
+}> =>{
+  try {
+    const response = await axiosInstance.post(`${RECRUITER_API}/sendresult`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Error sending interview result:', error);
+    throw error;
+  }
+}
+
+
 export const interviewService = {
   scheduleInterview,
   viewAllInterview,
   usersViewAllInterview,
   rescheduleInterview,
-  cancelInterview
+  cancelInterview,
+  finishInterview,
+  getAllCompleteInterviews,
+  sendInterviewResult
 };

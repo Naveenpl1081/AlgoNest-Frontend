@@ -4,6 +4,7 @@ import { RECRUITER_API, USER_API } from "../utils/apiRoutes";
 
 const postJobApplication = async (formData: FormData): Promise<any> => {
   try {
+    console.log("formData:",formData);
     const response = await axiosInstance.post(
       `${USER_API}/applyjob`,
       formData,
@@ -90,9 +91,29 @@ const applicationShortlist = async (jobId: string, threshold: string) => {
     }
   };
 
+  const fetchLocationSuggestions= async (query: string): Promise<any> => {
+    try {
+      const response = await axiosInstance.get(
+        `${USER_API}/locations`,
+        {
+          params: { query },
+        }
+      );
+      return response;
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      console.error(
+        "Error fetching location suggestions:",
+        err.response?.data || err.message
+      );
+      throw err;
+    }
+  }
+
 export const applicationService = {
   postJobApplication,
   getAllApplicants,
   applicationShortlist,
-  getAllShortlistApplicants
+  getAllShortlistApplicants,
+  fetchLocationSuggestions
 };

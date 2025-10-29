@@ -43,7 +43,7 @@ const UserRoutes = () => {
         <Route path='/user/ai-tutor' element={<AiTutorPage/>}/>
         <Route path='/user/ai-chat' element={<AiChatPage/>}/>
         <Route path='/user/jobdetails' element={<JobDetailsPage/>}/>
-        <Route path='/user/job-apply' element={<JobApplyPage/>}/>
+        <Route path='/user/job-apply/:jobId' element={<JobApplyPage/>}/>
         <Route path='/user/interview' element={<UsersViewAllInterviews/>}/>
         <Route path="/user/interviewcall/:roomId" element={<CandidateVideoCallPage />} />
 

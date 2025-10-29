@@ -1,4 +1,4 @@
-// components/RecruiterNavbar.tsx
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Layers, User, Menu, X } from "lucide-react";
@@ -13,6 +13,7 @@ const RecruiterNavbar: React.FC = () => {
     { path: "/recruiter/Applicants", label: "Applicants" },
     { path: "/recruiter/shortlist", label: "Shortlist" },
     { path: "/recruiter/interview", label: "Interview" },
+    { path: "/recruiter/completeinterviews", label: "completedInterview" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -20,7 +21,7 @@ const RecruiterNavbar: React.FC = () => {
   return (
     <div className="bg-slate-800/90 backdrop-blur-md border-b border-slate-700/50 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
+       
         <Link to="/recruiter/portal" className="flex items-center gap-2">
           <Layers className="w-7 h-7 text-cyan-400" />
           <span className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
@@ -28,7 +29,7 @@ const RecruiterNavbar: React.FC = () => {
           </span>
         </Link>
 
-        {/* Desktop Nav */}
+       
         <nav className="hidden md:flex items-center space-x-8">
           {navItems.map((item) => (
             <Link
@@ -45,13 +46,13 @@ const RecruiterNavbar: React.FC = () => {
           ))}
         </nav>
 
-        {/* Right Section */}
+        
         <div className="flex items-center space-x-4">
           <Link to="/recruiter/profile">
             <User className="w-5 h-5 text-gray-300 hover:text-white cursor-pointer transition-colors" />
           </Link>
 
-          {/* Mobile Menu Toggle */}
+          
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden text-gray-300 hover:text-white transition-colors"
@@ -61,7 +62,7 @@ const RecruiterNavbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+     
       {isMenuOpen && (
         <div className="md:hidden bg-slate-900/95 backdrop-blur-lg border-t border-slate-700/50">
           <nav className="flex flex-col items-start px-6 py-4 space-y-4">

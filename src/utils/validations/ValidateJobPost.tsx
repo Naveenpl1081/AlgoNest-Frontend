@@ -55,19 +55,8 @@ export const validateJobPost = (
     }
   }
 
-
-  // if (!formData.requirements) {
-  //   errors.push("minimum one requirement required");
-  // } else{
-  //   for(let val of formData.requirements){
-  //     if(val.length>30){
-  //       errors.push("maximum 30 length only");
-  //     }
-  //   }
-  // }
-
-  const hasMinSalary = formData.minSalary;
-  const hasMaxSalary = formData.maxSalary;
+  const hasMinSalary = formData.minSalary && formData.minSalary;
+  const hasMaxSalary = formData.maxSalary && formData.maxSalary;
 
   if (hasMinSalary || hasMaxSalary) {
     if (hasMinSalary && !hasMaxSalary) {
@@ -112,17 +101,39 @@ export const validateJobPost = (
 
   if (formData.requirements && formData.requirements.length > 0) {
     formData.requirements.forEach((req, index) => {
-      if (!req || !req.trim()) {
+      const trimmedReq = req.trim();
+
+      if (!trimmedReq) {
         errors.push(
           `Requirement ${index + 1} is empty. Please remove empty entries.`
         );
-      } else if (req.trim().length < 5) {
+      } else if (trimmedReq.length < 5) {
         errors.push(
           `Requirement ${index + 1} is too short (minimum 5 characters).`
         );
-      } else if (req.trim().length > 500) {
+      } else if (trimmedReq.length > 200) {
         errors.push(
-          `Requirement ${index + 1} is too long (maximum 500 characters).`
+          `Requirement ${index + 1} is too long (maximum 200 characters).`
+        );
+      }
+
+      const sentences = trimmedReq.split(/[.!?]+/).filter((s) => s.trim());
+      sentences.forEach((sentence) => {
+        if (sentence.trim().length > 150) {
+          errors.push(
+            `Requirement ${
+              index + 1
+            } contains a sentence that's too long. Please break it into smaller sentences.`
+          );
+        }
+      });
+
+      const wordCount = trimmedReq.split(/\s+/).length;
+      if (wordCount > 40) {
+        errors.push(
+          `Requirement ${
+            index + 1
+          } is too wordy (maximum 40 words). Please be more concise.`
         );
       }
     });
@@ -141,17 +152,39 @@ export const validateJobPost = (
 
   if (formData.responsibilities && formData.responsibilities.length > 0) {
     formData.responsibilities.forEach((resp, index) => {
-      if (!resp || !resp.trim()) {
+      const trimmedResp = resp.trim();
+
+      if (!trimmedResp) {
         errors.push(
           `Responsibility ${index + 1} is empty. Please remove empty entries.`
         );
-      } else if (resp.trim().length < 5) {
+      } else if (trimmedResp.length < 5) {
         errors.push(
           `Responsibility ${index + 1} is too short (minimum 5 characters).`
         );
-      } else if (resp.trim().length > 500) {
+      } else if (trimmedResp.length > 200) {
         errors.push(
-          `Responsibility ${index + 1} is too long (maximum 500 characters).`
+          `Responsibility ${index + 1} is too long (maximum 200 characters).`
+        );
+      }
+
+      const sentences = trimmedResp.split(/[.!?]+/).filter((s) => s.trim());
+      sentences.forEach((sentence) => {
+        if (sentence.trim().length > 150) {
+          errors.push(
+            `Responsibility ${
+              index + 1
+            } contains a sentence that's too long. Please break it into smaller sentences.`
+          );
+        }
+      });
+
+      const wordCount = trimmedResp.split(/\s+/).length;
+      if (wordCount > 40) {
+        errors.push(
+          `Responsibility ${
+            index + 1
+          } is too wordy (maximum 40 words). Please be more concise.`
         );
       }
     });

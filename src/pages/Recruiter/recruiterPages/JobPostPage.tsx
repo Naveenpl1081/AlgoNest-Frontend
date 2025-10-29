@@ -17,10 +17,8 @@ const JobPostPage: React.FC = () => {
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  
-  
-  const jobToEdit = location.state?.jobs as Job | undefined;
 
+  const jobToEdit = location.state?.jobs as Job | undefined;
 
   const getInitialFormData = (): JobPostFormData | undefined => {
     if (!jobToEdit) return undefined;
@@ -61,18 +59,20 @@ const JobPostPage: React.FC = () => {
 
       let response;
       if (jobToEdit?._id) {
-    
-        response = await jobService.updateJobDetails(jobToEdit._id, jobPostData);
+        response = await jobService.updateJobDetails(
+          jobToEdit._id,
+          jobPostData
+        );
         setSubmitStatus({
           type: "success",
           message: "Job updated successfully!",
         });
       } else {
-        
         response = await jobService.postJobDetails(jobPostData);
         setSubmitStatus({
           type: "success",
-          message: "Job posted successfully! Candidates will be able to apply soon.",
+          message:
+            "Job posted successfully! Candidates will be able to apply soon.",
         });
       }
 
