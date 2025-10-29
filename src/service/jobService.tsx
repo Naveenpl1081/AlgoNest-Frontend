@@ -98,6 +98,38 @@ const jobDetails = async (params: {
     throw err;
   }
 };
+const fetchLocationSuggestions= async (query: string): Promise<any> => {
+  try {
+    const response = await axiosInstance.get(
+      `${RECRUITER_API}/locations`,
+      {
+        params: { query },
+      }
+    );
+    return response;
+  } catch (error: unknown) {
+    const err = error as ApiError;
+    console.error(
+      "Error fetching location suggestions:",
+      err.response?.data || err.message
+    );
+    throw err;
+  }
+}
+
+const getSingleJob=async(jobId:any)=>{
+try {
+  const response=await axiosInstance.get(`${USER_API}/getonejob/${jobId}`)
+  return response
+} catch (error) {
+  const err = error as ApiError;
+    console.error(
+      "Error fetching location suggestions:",
+      err.response?.data || err.message
+    );
+    throw err;
+}
+}
 
 export const jobService = {
   postJobDetails,
@@ -105,5 +137,6 @@ export const jobService = {
   updateJobDetails,
   toggleJobStatus,
   jobDetails,
-  
+  fetchLocationSuggestions,
+  getSingleJob
 };

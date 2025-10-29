@@ -192,7 +192,7 @@ const JobDetailsPage = () => {
                   job={job}
                   showActions={true}
                   onApply={() => {
-                    navigate('/user/job-apply', { state: { job } });
+                    navigate(`/user/job-apply/${job._id}`);
                   }}
                 />
               ))}

@@ -17,6 +17,7 @@ import ShortlistCandidatesPage from "../pages/Recruiter/recruiterPages/ShortList
 import ViewAllInterviews from "../pages/Recruiter/recruiterPages/InterviewScheduledPage";
 
 import RecruiterVideoCallPage from "../pages/Recruiter/recruiterPages/InterviewVideoCallPage";
+import CompletedInterviewsPage from "../pages/Recruiter/recruiterPages/CompleteInterviewsPage";
 
 const RecruiterRoutes:React.FC = () => {
   return (
@@ -45,6 +46,7 @@ const RecruiterRoutes:React.FC = () => {
         <Route path="/recruiter/shortlist" element={<ShortlistCandidatesPage/>}/>
         <Route path="/recruiter/interview" element={<ViewAllInterviews/>}/>
         <Route path="/recruiter/interviewcall/:roomId" element={<RecruiterVideoCallPage/>} />
+        <Route path="/recruiter/completeinterviews" element={<CompletedInterviewsPage/>}/>
       </Route>
     </Routes>
   );

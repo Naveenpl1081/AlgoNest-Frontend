@@ -1,26 +1,65 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import JobApplyComponent from "../../../component/user/JobApplyComponent";
-
 import SingleJobDetailsComponent from "../../../component/user/SingleJobDetailsComponent";
 import UserLayout from "../../../layouts/UserLayout";
 import { applicationService } from "../../../service/ApplicationService";
 import { jobService } from "../../../service/jobService";
+import { Job } from "../../../models/recruiter";
 
 const JobApplyPage = () => {
-  const location = useLocation();
+  const { jobId } = useParams<{ jobId: string }>();
   const navigate = useNavigate();
-  const job = location.state?.job;
+  
+  const [job, setJob] = useState<Job | null>(null);
+  const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  useEffect(() => {
+    const fetchJobDetails = async () => {
+      if (!jobId) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await jobService.getSingleJob(jobId);
+        console.log("API Response:", response);
+        
+        const jobData = response?.data?.data || response?.data;
+
+        console.log("jobData id:",jobData._id)
+        
+        if (jobData) {
+          console.log("Job Data:", jobData);
+          setJob(jobData);
+        } else {
+          toast.error("Failed to fetch job details");
+          navigate("/user/jobdetails");
+        }
+      } catch (error) {
+        console.error("Error fetching job details:", error);
+        toast.error("Failed to load job details");
+        navigate("/user/jobdetails");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobDetails();
+  }, [jobId, navigate]);
+
   const handleSubmitApplication = async (applicationData: any) => {
+    if (!job) return;
+    
     setIsSubmitting(true);
 
     try {
       const formData = new FormData();
-      formData.append("jobId", job._id || job.id);
+      formData.append("jobId", job._id);
       formData.append("name", applicationData.name);
       formData.append("email", applicationData.email);
       formData.append("contactNo", applicationData.contactNo);
@@ -66,17 +105,13 @@ const JobApplyPage = () => {
       }
 
       formData.append("aboutYourself", applicationData.aboutYourself);
-
       formData.append("skills", JSON.stringify(applicationData.skills));
 
       if (applicationData.resume) {
         formData.append("resume", applicationData.resume);
       }
       if (applicationData.plusTwoCertificate) {
-        formData.append(
-          "plusTwoCertificate",
-          applicationData.plusTwoCertificate
-        );
+        formData.append("plusTwoCertificate", applicationData.plusTwoCertificate);
       }
       if (applicationData.degreeCertificate) {
         formData.append("degreeCertificate", applicationData.degreeCertificate);
@@ -100,14 +135,31 @@ const JobApplyPage = () => {
         }, 3000);
       } else {
         setIsSubmitting(false);
-        toast.error(response.message)
+        toast.error(response.message || "Failed to submit application");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting application:", error);
       setIsSubmitting(false);
-      alert("Failed to submit application. Please try again.");
+      toast.error(error?.response?.data?.message || "Failed to submit application. Please try again.");
     }
   };
+
+
+  if (loading) {
+    return (
+      <UserLayout>
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-slate-700/30 backdrop-blur-md rounded-lg border border-slate-600/50 p-12 text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+              <p className="text-gray-400">Loading job details...</p>
+            </div>
+          </div>
+        </div>
+      </UserLayout>
+    );
+  }
+
 
   if (!job) {
     return (
@@ -116,9 +168,17 @@ const JobApplyPage = () => {
           <div className="max-w-7xl mx-auto">
             <div className="bg-slate-700/30 backdrop-blur-md rounded-lg border border-slate-600/50 p-12 text-center">
               <h3 className="text-xl font-semibold text-gray-400 mb-2">
-                No Job Selected
+                Job Not Found
               </h3>
-              <p className="text-gray-500">Please select a job to apply</p>
+              <p className="text-gray-500 mb-4">
+                The job you're looking for doesn't exist or has been removed.
+              </p>
+              <button
+                onClick={() => navigate("/user/jobdetails")}
+                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+              >
+                Back to Jobs
+              </button>
             </div>
           </div>
         </div>

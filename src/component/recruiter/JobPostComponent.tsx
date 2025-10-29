@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Plus,
-  Calendar,
   MapPin,
   DollarSign,
   Users,
   Code,
   Clock,
   X,
+  Loader2,
 } from "lucide-react";
 import { JobPostFormData } from "../../models/recruiter";
 import { validateJobPost } from "../../utils/validations/ValidateJobPost";
+import { jobService } from "../../service/jobService";
 
 interface JobPostComponentProps {
   onSubmit: (data: JobPostFormData) => void;
@@ -18,10 +19,16 @@ interface JobPostComponentProps {
   isEditMode?: boolean;
 }
 
-const JobPostComponent: React.FC<JobPostComponentProps> = ({ 
-  onSubmit, 
+export interface LocationSuggestion {
+  display_name: string;
+  lat: string;
+  lon: string;
+}
+
+const JobPostComponent: React.FC<JobPostComponentProps> = ({
+  onSubmit,
   initialData,
-  isEditMode = false 
+  isEditMode = false,
 }) => {
   const [formData, setFormData] = useState<JobPostFormData>({
     role: "",
@@ -39,19 +46,89 @@ const JobPostComponent: React.FC<JobPostComponentProps> = ({
   const [newResponsibility, setNewResponsibility] = useState<string>("");
   const [errors, setErrors] = useState<string[]>([]);
 
-  
+  const [locationSuggestions, setLocationSuggestions] = useState<
+    LocationSuggestion[]
+  >([]);
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+  const [isLoadingLocations, setIsLoadingLocations] = useState<boolean>(false);
+  const locationInputRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (initialData) {
-      console.log("initialdata",initialData)
+      console.log("initialdata", initialData);
       setFormData(initialData);
     }
   }, [initialData]);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      const query = formData.jobLocation.trim();
+
+      if (query.length < 3) {
+        setLocationSuggestions([]);
+        setShowSuggestions(false);
+        return;
+      }
+
+      setIsLoadingLocations(true);
+
+      try {
+        const response = await jobService.fetchLocationSuggestions(query);
+
+        if (response.data && response.data.success) {
+          setLocationSuggestions(response.data.data || []);
+          setShowSuggestions(response.data.data.length > 0);
+        } else {
+          setLocationSuggestions([]);
+          setShowSuggestions(false);
+        }
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+        setLocationSuggestions([]);
+        setShowSuggestions(false);
+      } finally {
+        setIsLoadingLocations(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(() => {
+      fetchLocations();
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [formData.jobLocation]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        locationInputRef.current &&
+        !locationInputRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleInputChange = (field: keyof JobPostFormData, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
+  };
+
+  const handleLocationSelect = (location: LocationSuggestion) => {
+    const parts = location.display_name.split(",");
+    const cleanLocation = parts.slice(0, 2).join(",").trim();
+
+    setFormData((prev) => ({
+      ...prev,
+      jobLocation: cleanLocation,
+    }));
+    setShowSuggestions(false);
+    setLocationSuggestions([]);
   };
 
   const addRequirement = (): void => {
@@ -114,7 +191,6 @@ const JobPostComponent: React.FC<JobPostComponentProps> = ({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-      {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl animate-pulse"></div>
         <div
@@ -137,6 +213,7 @@ const JobPostComponent: React.FC<JobPostComponentProps> = ({
             </ul>
           </div>
         )}
+
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl lg:text-5xl font-bold mb-4 leading-tight">
@@ -149,18 +226,15 @@ const JobPostComponent: React.FC<JobPostComponentProps> = ({
             </span>
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            {isEditMode 
-              ? "Update the job details and requirements" 
+            {isEditMode
+              ? "Update the job details and requirements"
               : "Find the perfect candidate for your tech role by providing detailed job requirements"}
           </p>
         </div>
 
-        {/* Form */}
         <div className="bg-gradient-to-br from-slate-700/30 to-slate-600/20 backdrop-blur-md rounded-3xl p-8 border border-slate-600/50">
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Basic Information */}
             <div className="grid lg:grid-cols-2 gap-6">
-              {/* Role */}
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-3 flex items-center">
                   <Code className="w-4 h-4 mr-2 text-blue-400" />
@@ -175,27 +249,64 @@ const JobPostComponent: React.FC<JobPostComponentProps> = ({
                 />
               </div>
 
-              {/* Job Location */}
-              <div>
+              <div ref={locationInputRef} className="relative">
                 <label className="block text-sm font-semibold text-gray-300 mb-3 flex items-center">
                   <MapPin className="w-4 h-4 mr-2 text-purple-400" />
                   Job Location *
                 </label>
-                <input
-                  type="text"
-                  value={formData.jobLocation}
-                  onChange={(e) =>
-                    handleInputChange("jobLocation", e.target.value)
-                  }
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/50 rounded-xl text-white placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200"
-                  placeholder="e.g. Bangalore, Karnataka"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.jobLocation}
+                    onChange={(e) =>
+                      handleInputChange("jobLocation", e.target.value)
+                    }
+                    onFocus={() => {
+                      if (locationSuggestions.length > 0) {
+                        setShowSuggestions(true);
+                      }
+                    }}
+                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/50 rounded-xl text-white placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200"
+                    placeholder="e.g. Bangalore, Karnataka"
+                    autoComplete="off"
+                  />
+                  {isLoadingLocations && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <Loader2 className="w-5 h-5 text-purple-400 animate-spin" />
+                    </div>
+                  )}
+                </div>
+
+                {showSuggestions && locationSuggestions.length > 0 && (
+                  <div className="absolute z-50 w-full mt-2 bg-slate-800 border border-slate-600 rounded-xl shadow-2xl max-h-64 overflow-y-auto">
+                    {locationSuggestions.map((location, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => handleLocationSelect(location)}
+                        className="w-full px-4 py-3 text-left hover:bg-slate-700/50 transition-colors border-b border-slate-700 last:border-b-0 flex items-start gap-3"
+                      >
+                        <MapPin className="w-4 h-4 text-purple-400 mt-1 flex-shrink-0" />
+                        <span className="text-sm text-gray-200">
+                          {location.display_name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {showSuggestions &&
+                  !isLoadingLocations &&
+                  formData.jobLocation.length >= 3 &&
+                  locationSuggestions.length === 0 && (
+                    <div className="absolute z-50 w-full mt-2 bg-slate-800 border border-slate-600 rounded-xl shadow-2xl p-4 text-center text-gray-400 text-sm">
+                      No locations found. Try a different search.
+                    </div>
+                  )}
               </div>
             </div>
 
-            {/* Work Details */}
             <div className="grid lg:grid-cols-3 gap-6">
-              {/* Work Time */}
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-3 flex items-center">
                   <Clock className="w-4 h-4 mr-2 text-green-400" />
@@ -216,7 +327,6 @@ const JobPostComponent: React.FC<JobPostComponentProps> = ({
                 </select>
               </div>
 
-              {/* Work Mode */}
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-3 flex items-center">
                   <Users className="w-4 h-4 mr-2 text-cyan-400" />
@@ -373,7 +483,6 @@ const JobPostComponent: React.FC<JobPostComponentProps> = ({
               )}
             </div>
 
-           
             <div className="flex justify-center pt-6">
               <button
                 type="submit"

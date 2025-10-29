@@ -195,17 +195,15 @@ const ShortlistCandidatesPage: React.FC = () => {
             Details
           </Button>
 
-          
           {item.status === "scheduled" ? (
-           <Button
-           variant="secondary"
-           size="sm"
-           disabled
-           className="px-4 py-2 font-medium bg-green-600 text-white cursor-not-allowed opacity-100"
-         >
-           Interview Scheduled
-         </Button>
-         
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled
+              className="px-4 py-2 font-medium bg-green-600 text-white cursor-not-allowed opacity-100"
+            >
+              Interview Scheduled
+            </Button>
           ) : (
             <Button
               variant="secondary"
@@ -302,14 +300,12 @@ const ShortlistCandidatesPage: React.FC = () => {
           onSchedule={handleScheduleInterview}
         />
 
-        {/* Success Toast */}
         {showSuccessToast && (
           <div className="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
             Interview scheduled successfully!
           </div>
         )}
 
-        {/* Error Toast */}
         {showErrorToast && (
           <div className="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg">
             Failed to schedule interview. Please try again.

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Video, X, Calendar, Clock, User, Briefcase } from 'lucide-react';
+import { Video, X, Calendar, Clock, User, Briefcase, CheckCircle } from 'lucide-react';
 
 interface InterviewCardProps {
   interview: {
@@ -21,9 +21,10 @@ interface InterviewCardProps {
     status: string;
     createdAt: string;
   };
-  role:string
+  role: string;
   onStartCall: (roomId: string) => void;
   onCancel: (interviewId: string) => void;
+  onFinished: (interviewId: string) => void;
   onReschedule: (interviewId: string) => void;
 }
 
@@ -31,9 +32,9 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
   interview,
   onStartCall,
   onCancel,
+  onFinished,
   onReschedule,
   role,
-
 }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -65,16 +66,14 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
     return interviewDateTime > new Date();
   };
 
-  // Get clean candidate name
   const getCandidateName = () => {
-    console.log("candidate type",typeof interview.candidateId )
+    console.log("candidate type", typeof interview.candidateId);
     if (typeof interview.candidateId === 'object') {
       return interview.candidateId.username;
     }
     return 'N/A';
   };
 
-  // Get clean job role
   const getJobRole = () => {
     if (typeof interview.jobId === 'object') {
       return interview.jobId.jobrole;
@@ -84,7 +83,7 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
 
   return (
     <div className="bg-slate-800/50 backdrop-blur-md rounded-xl border border-slate-700/50 overflow-hidden hover:border-slate-600 transition-all duration-300 hover:shadow-xl hover:shadow-slate-900/50">
-      {/* Header */}
+
       <div className="bg-gradient-to-r from-slate-700/50 to-slate-800/50 p-4 border-b border-slate-700/50">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
@@ -105,9 +104,9 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
         </div>
       </div>
 
-      {/* Content */}
+      
       <div className="p-4 space-y-3">
-        {/* Date & Time */}
+     
         <div className="flex items-center gap-3 text-gray-300">
           <Calendar className="w-4 h-4 text-blue-400" />
           <span className="text-sm">{formatDate(interview.date)}</span>
@@ -120,7 +119,6 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
           </span>
         </div>
 
-      
         <div className="flex items-center gap-3 text-gray-300">
           <User className="w-4 h-4 text-blue-400" />
           <span className="text-sm font-medium text-white">
@@ -128,7 +126,6 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
           </span>
         </div>
 
-        
         {getJobRole() && (
           <div className="flex items-center gap-3 text-gray-300">
             <Briefcase className="w-4 h-4 text-blue-400" />
@@ -138,7 +135,6 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
           </div>
         )}
 
-       
         {interview.instructions && (
           <div className="mt-3 p-3 bg-slate-700/30 rounded-lg">
             <p className="text-xs text-gray-400 mb-1 font-medium">Instructions:</p>
@@ -149,50 +145,64 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
         )}
       </div>
 
-  
+   
       <div className="p-4 bg-slate-900/30 border-t border-slate-700/50">
-        <div className="flex gap-2">
-          {interview.status.toLowerCase() === 'scheduled' &&  (
+        {interview.status.toLowerCase() === 'scheduled' && (
+          <div className="space-y-2">
+           
             <button
               onClick={() => onStartCall(interview.roomId)}
-              className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-lg shadow-blue-900/30 hover:shadow-blue-900/50"
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-lg shadow-blue-900/30 hover:shadow-blue-900/50"
             >
               <Video className="w-4 h-4" />
               Start Call
             </button>
-          )}
-          
-          {role==="recruiter" && interview.status.toLowerCase() === 'scheduled' && (
-            <>
-              <button
-                onClick={() => onReschedule(interview._id)}
-                className="flex-1 flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 text-gray-300 hover:text-white px-4 py-2.5 rounded-lg font-medium transition-all duration-200 border border-slate-600/50 hover:border-slate-500"
-              >
-                <Calendar className="w-4 h-4" />
-                Reschedule
-              </button>
-              
-              <button
-                onClick={() => onCancel(interview._id)}
-                className="flex items-center justify-center gap-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-red-300 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 border border-red-600/50 hover:border-red-500"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </>
-          )}
 
-          {interview.status.toLowerCase() === 'completed' && (
-            <div className="flex-1 text-center py-2 text-green-400 font-medium">
-              Interview Completed
-            </div>
-          )}
+         
+            {role === "recruiter" && (
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => onReschedule(interview._id)}
+                  className="flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 text-gray-300 hover:text-white px-3 py-2 rounded-lg font-medium transition-all duration-200 border border-slate-600/50 hover:border-slate-500"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span className="text-sm">Reschedule</span>
+                </button>
 
-          {interview.status.toLowerCase() === 'cancelled' && (
-            <div className="flex-1 text-center py-2 text-red-400 font-medium">
-              Interview Cancelled
-            </div>
-          )}
-        </div>
+                <button
+                  onClick={() => onFinished(interview._id)}
+                  className="flex items-center justify-center gap-2 bg-green-600/20 hover:bg-green-600/30 text-green-400 hover:text-green-300 px-3 py-2 rounded-lg font-medium transition-all duration-200 border border-green-600/50 hover:border-green-500"
+                  title="Mark as Finished"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  <span className="text-sm">Finish</span>
+                </button>
+
+                <button
+                  onClick={() => onCancel(interview._id)}
+                  className="flex items-center justify-center gap-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-red-300 px-3 py-2 rounded-lg font-medium transition-all duration-200 border border-red-600/50 hover:border-red-500"
+                >
+                  <X className="w-4 h-4" />
+                  <span className="text-sm">Cancel</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {interview.status.toLowerCase() === 'completed' && (
+          <div className="flex items-center justify-center gap-2 py-2 text-green-400 font-medium">
+            <CheckCircle className="w-5 h-5" />
+            Interview Completed
+          </div>
+        )}
+
+        {interview.status.toLowerCase() === 'cancelled' && (
+          <div className="flex items-center justify-center gap-2 py-2 text-red-400 font-medium">
+            <X className="w-5 h-5" />
+            Interview Cancelled
+          </div>
+        )}
       </div>
     </div>
   );

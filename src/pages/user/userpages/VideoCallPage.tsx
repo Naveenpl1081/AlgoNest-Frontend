@@ -33,7 +33,7 @@ const CandidateVideoCallPage: React.FC = () => {
   useEffect(() => {
     if (!roomId) return;
 
-    socket = io("http://localhost:3000", {
+    socket = io(import.meta.env.VITE_API_URL, {
       transports: ["websocket", "polling"],
       reconnection: true,
       reconnectionAttempts: 5,
