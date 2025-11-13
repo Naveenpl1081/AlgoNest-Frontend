@@ -9,6 +9,7 @@ import {
   Layers,
   FileUser,
   IdCard,
+  Crown,
 } from "lucide-react";
 import { useLocation, NavLink } from "react-router-dom";
 
@@ -43,12 +44,11 @@ export const AdminSidebar: React.FC = () => {
     },
     { id: "problems", label: "Problems", icon: Code, path: "/admin/problems" },
     {
-      id: "community",
-      label: "Community",
-      icon: MessageCircle,
-      path: "/admin/community",
+      id: "subscription",
+      label: "Subscription Plan",
+      icon: Crown,
+      path: "/admin/subscriptions",
     },
-    { id: "jobs", label: "Job Posts", icon: Briefcase, path: "/admin/jobs" },
   ];
 
   return (

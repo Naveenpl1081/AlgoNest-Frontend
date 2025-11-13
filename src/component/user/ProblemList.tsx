@@ -5,6 +5,8 @@ import { problemService } from "../../service/problemService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Play, Trophy } from "lucide-react";
+import { aiAuthService } from "../../service/AiService";
+import { SubscriptionModal } from "./SubscriptionModal";
 interface ProblemListProps {
   searchTerm: string;
   statusFilter: string;
@@ -16,6 +18,7 @@ const ProblemList: React.FC<ProblemListProps> = ({
 }) => {
   const [problems, setProblems] = useState<IProblem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const fetchProblems = async () => {
@@ -57,10 +60,19 @@ const ProblemList: React.FC<ProblemListProps> = ({
     };
   }, [searchTerm, statusFilter]);
 
-  const handleProblemClick = (problemId: string) => {
-    navigate(`/user/singleproblem/${problemId}`);
-  };
+  const handleProblemClick = async (problemId: string, isPremium: boolean) => {
+    if (isPremium) {
+      const response = await aiAuthService.checkBasic();
 
+      if (response.data.success) {
+        navigate(`/user/singleproblem/${problemId}`);
+      } else {
+        setIsModalOpen(true);
+      }
+    } else {
+      navigate(`/user/singleproblem/${problemId}`);
+    }
+  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
@@ -90,7 +102,7 @@ const ProblemList: React.FC<ProblemListProps> = ({
       label: "Problem Title",
       render: (problem) => (
         <button
-          onClick={() => handleProblemClick(problem._id)}
+          onClick={() => handleProblemClick(problem._id, problem.isPremium)}
           className="text-cyan-400 hover:text-cyan-300 font-semibold text-sm transition duration-200 hover:underline"
         >
           {problem.title}
@@ -140,7 +152,7 @@ const ProblemList: React.FC<ProblemListProps> = ({
       label: "Action",
       render: (problem) => (
         <button
-          onClick={() => handleProblemClick(problem._id)}
+          onClick={() => handleProblemClick(problem._id, problem.isPremium)}
           className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 flex items-center gap-2"
         >
           <Play size={16} />
@@ -188,6 +200,12 @@ const ProblemList: React.FC<ProblemListProps> = ({
             columns={columns}
             currentPage={1}
             pageSize={10}
+          />
+        )}
+        {isModalOpen && (
+          <SubscriptionModal
+            isOpen={true}
+            onClose={() => setIsModalOpen(false)}
           />
         )}
       </div>

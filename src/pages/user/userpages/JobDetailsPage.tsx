@@ -119,9 +119,9 @@ const JobDetailsPage = () => {
 
   if (loading) {
     return (
-      <RecruiterLayout>
+      <UserLayout>
         <JobsLoadingSkeleton />
-      </RecruiterLayout>
+      </UserLayout>
     );
   }
 
