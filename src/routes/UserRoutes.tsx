@@ -20,6 +20,11 @@ import JobApplyPage from '../pages/user/userpages/JobApplyPage'
 
 import UsersViewAllInterviews from '../pages/user/userpages/InterviewListPage'
 import CandidateVideoCallPage from '../pages/user/userpages/VideoCallPage'
+import CommunityQuestion from '../pages/user/userpages/CommunityQuestion'
+import CommunityPage from '../pages/user/userpages/CommunityPage'
+import CommunityAnswer from '../pages/user/userpages/CommunityAnswer'
+import SubscriptionSuccess from '../pages/user/userpages/SubscriptionPage'
+
 
 const UserRoutes = () => {
   return (
@@ -46,7 +51,10 @@ const UserRoutes = () => {
         <Route path='/user/job-apply/:jobId' element={<JobApplyPage/>}/>
         <Route path='/user/interview' element={<UsersViewAllInterviews/>}/>
         <Route path="/user/interviewcall/:roomId" element={<CandidateVideoCallPage />} />
-
+        <Route path='/user/communityquestion' element={<CommunityQuestion/>}/>
+        <Route path='/user/community' element={<CommunityPage/>}/>
+        <Route path='/user/answerpage/:questionId' element={<CommunityAnswer />} />
+        <Route path="/user/subscription" element={<SubscriptionSuccess />} />
         </Route>
         
     </Routes>

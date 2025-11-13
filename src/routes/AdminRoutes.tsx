@@ -12,6 +12,7 @@ import { ProblemsListPage } from "../pages/admin/adminPages/ProblemsPage";
 import ProblemAddingPage from "../pages/admin/adminPages/ProblemAddingPage";
 import CategoryAddingPage from "../pages/admin/adminPages/CategoryAddingPage";
 import { CategoriesListPage } from "../pages/admin/adminPages/CategoriesListPage";
+import { SubscriptionPlan } from "../pages/admin/adminPages/SubscriptionPlan";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -31,6 +32,7 @@ const AdminRoutes: React.FC = () => {
          <Route path="/admin/problemcategory" element={<CategoriesListPage/>} />
          <Route path="/admin/addproblemcategory" element={<CategoryAddingPage/>} />
          <Route path="/admin/editcategory" element={<CategoryAddingPage/>} />
+         <Route path='/admin/subscriptions' element={<SubscriptionPlan/>}/>
       </Route>
     </Routes>
   );

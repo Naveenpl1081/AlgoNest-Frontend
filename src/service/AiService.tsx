@@ -18,8 +18,11 @@ const getExplainedError = async ({
     });
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching AI explanation:", error.response?.data || error.message);
-    
+    console.error(
+      "Error fetching AI explanation:",
+      error.response?.data || error.message
+    );
+
     // Re-throw with additional context
     if (error.response) {
       // Server responded with error
@@ -27,7 +30,7 @@ const getExplainedError = async ({
     } else if (error.request) {
       // Network error
       const networkError = new Error("Network connection failed");
-      (networkError as any).code = 'NETWORK_ERROR';
+      (networkError as any).code = "NETWORK_ERROR";
       throw networkError;
     } else {
       // Other error
@@ -35,7 +38,6 @@ const getExplainedError = async ({
     }
   }
 };
-
 
 const getAiAnswers = async (data: {
   message: string;
@@ -47,12 +49,48 @@ const getAiAnswers = async (data: {
     const response = await axiosInstance.post(`${USER_API}/aitutor`, data);
     return response.data;
   } catch (error: any) {
-    console.error('AI Service Error:', error);
+    console.error("AI Service Error:", error);
     throw error.response?.data || error;
   }
 };
 
+const checkPremium = async () => {
+  try {
+    const res = await axiosInstance.get(`${USER_API}/ispremium`);
+
+    return res.data;
+  } catch (error: any) {
+    console.error("AI Service Error:", error);
+    throw error.response?.data || error;
+  }
+};
+
+
+const checkStandard = async () => {
+  try {
+    const res = await axiosInstance.get(`${USER_API}/isstandard`);
+
+    return res.data;
+  } catch (error: any) {
+    console.error("AI Service Error:", error);
+    throw error.response?.data || error;
+  }
+};
+
+const checkBasic = async () => {
+  try {
+    const res = await axiosInstance.get(`${USER_API}/isbasic`);
+
+    return res.data;
+  } catch (error: any) {
+    console.error("AI Service Error:", error);
+    throw error.response?.data || error;
+  }
+};
 export const aiAuthService = {
   getExplainedError,
-  getAiAnswers
+  getAiAnswers,
+  checkPremium,
+  checkStandard,
+  checkBasic
 };

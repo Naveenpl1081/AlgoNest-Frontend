@@ -9,6 +9,7 @@ import { problemService } from "../../../service/problemService";
 import ShimmerSkeleton from "../../../utils/shimmer/ProblemShimmer";
 import AIExplanationPopup from "../../../component/user/AIExplanationPopup";
 import AILoadingModal from "../../../utils/AILoadingModal";
+import { SubscriptionModal } from "../../../component/user/SubscriptionModal";
 
 const SingleProblemPage = () => {
   const { problemId } = useParams();
@@ -35,6 +36,7 @@ const SingleProblemPage = () => {
 
 
   const [aiLoading, setAiLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchProblemData = async () => {
@@ -70,6 +72,13 @@ const SingleProblemPage = () => {
     problemStatement,
   }: any) => {
     try {
+
+      console.log("hellooo nammal ethii")
+
+      const res=await aiAuthService.checkStandard()
+
+      if(res.data.success){
+        
       setAiLoading(true); 
 
       const response = await aiAuthService.getExplainedError({
@@ -95,6 +104,11 @@ const SingleProblemPage = () => {
       } else {
         alert(" AI could not generate an explanation. Please try again.");
       }
+      }else{
+        setIsModalOpen(true)
+      }
+
+
     } catch (err: any) {
       console.error("AI Debugger Error:", err);
       const errorResponse = err.response?.data?.error;
@@ -303,6 +317,13 @@ const SingleProblemPage = () => {
           </div>
         </div>
       </div>
+
+      {isModalOpen && (
+          <SubscriptionModal
+            isOpen={true}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
 
       
       <AILoadingModal isOpen={aiLoading} />

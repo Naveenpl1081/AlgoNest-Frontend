@@ -5,6 +5,8 @@ import {
   Calendar,
   Github,
   Linkedin,
+  Crown,
+  Clock,
 } from "lucide-react";
 import ProfileEditModal from "./ProfileEditModal";
 import { Buildimage } from "../../utils/cloudinary/cloudinary";
@@ -18,6 +20,10 @@ type UserInfo = {
   github?: string;
   linkedin?: string;
   profileImage?: string;
+  subscriptionPlan?: {
+    planName: string;
+    durationInMonths: number;
+  };
 };
 
 type Props = {
@@ -25,7 +31,7 @@ type Props = {
 };
 
 const UserDetails: React.FC<Props> = ({ userInfo }) => {
-  console.log("userInfo from userDetailscomponent",userInfo)
+  console.log("userInfo from userDetailscomponent", userInfo);
   const [showModal, setShowModal] = useState(false);
   const [updatedInfo, setUpdatedInfo] = useState(userInfo);
 
@@ -66,6 +72,18 @@ const UserDetails: React.FC<Props> = ({ userInfo }) => {
               Rank #247
             </div>
           </div>
+
+          {updatedInfo.subscriptionPlan && (
+              <div className="px-4 py-1.5 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/40 text-amber-400 text-xs rounded-full font-bold flex items-center space-x-1.5 shadow-lg">
+                <Crown className="w-3.5 h-3.5" />
+                <span>{updatedInfo.subscriptionPlan.planName}</span>
+                <span className="text-amber-300/70">•</span>
+                <Clock className="w-3 h-3" />
+                <span className="text-amber-300/70">
+                  {updatedInfo.subscriptionPlan.durationInMonths}mo
+                </span>
+              </div>
+            )}
         </div>
 
         <div className="space-y-4 text-gray-300">

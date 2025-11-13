@@ -166,9 +166,9 @@ const UsersViewAllInterviews = () => {
 
   if (loading) {
     return (
-      <RecruiterLayout>
+      <UserLayout>
         <JobsLoadingSkeleton />
-      </RecruiterLayout>
+      </UserLayout>
     );
   }
 
