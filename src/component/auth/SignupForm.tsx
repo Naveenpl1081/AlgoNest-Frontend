@@ -78,7 +78,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
               </span>
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold  mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Create Account
           </h1>
           <p className="text-gray-300 text-lg">
@@ -89,6 +89,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
         <div className="space-y-6">
           <InputField
             label="Username"
+            name="username"
             type="text"
             placeholder="Enter your username"
             value={formData.username}
@@ -99,6 +100,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
   
           <InputField
             label="Email"
+            name="email"
             type="email"
             placeholder="Enter your email"
             value={formData.email}
@@ -109,6 +111,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
   
           <InputField
             label="Password"
+            name="password"
             type="password"
             placeholder="Create a strong password"
             value={formData.password}
@@ -120,6 +123,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
   
           <InputField
             label="Confirm Password"
+            name="confirmpassword"
             type="password"
             placeholder="Confirm your password"
             value={formData.confirmPassword}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const AILoadingModal = ({ isOpen }) => {
+const AILoadingModal = ({ isOpen }: { isOpen: boolean }) =>{
   const [currentStep, setCurrentStep] = useState(0);
   const [loadingText, setLoadingText] = useState('');
 

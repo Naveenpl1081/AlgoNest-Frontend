@@ -24,7 +24,7 @@ interface InterviewCardProps {
   role: string;
   onStartCall: (roomId: string) => void;
   onCancel: (interviewId: string) => void;
-  onFinished: (interviewId: string) => void;
+  onFinished?: (interviewId: string) => void; 
   onReschedule: (interviewId: string) => void;
 }
 
@@ -170,7 +170,7 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
                 </button>
 
                 <button
-                  onClick={() => onFinished(interview._id)}
+                  onClick={() => onFinished?.(interview._id)}
                   className="flex items-center justify-center gap-2 bg-green-600/20 hover:bg-green-600/30 text-green-400 hover:text-green-300 px-3 py-2 rounded-lg font-medium transition-all duration-200 border border-green-600/50 hover:border-green-500"
                   title="Mark as Finished"
                 >

@@ -97,7 +97,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
             </span>
           </div>
         </div>
-        <h1 className="text-4xl font-bold text-white mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
           Welcome Back
         </h1>
         <p className="text-gray-300 text-lg">
@@ -108,6 +108,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
       <div className="space-y-6">
         <InputField
           label="Email"
+          name="email"
           type="email"
           placeholder="Enter your email"
           value={formData.email}
@@ -118,6 +119,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role = "User", onSubmit }) => {
 
         <InputField
           label="Password"
+          name="password"
           type="password"
           placeholder="Enter your password"
           value={formData.password}

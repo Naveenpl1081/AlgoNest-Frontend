@@ -198,14 +198,14 @@ export const ApplicantDetails: React.FC = () => {
                   <InfoCard label="Company Type" value={applicant.companyType || "N/A"} icon={<Factory className="w-5 h-5 text-cyan-400" />} />
                 </div>
                 <div className="space-y-6">
-                  <InfoCard label="Company Name" value={applicant.companyName} icon={<Building2 className="w-5 h-5 text-cyan-400" />} />
-                  <InfoCard label="Phone Number" value={applicant.phone} icon={<Phone className="w-5 h-5 text-cyan-400" />} />
+                  <InfoCard label="Company Name" value={applicant.companyName || "N/A"} icon={<Building2 className="w-5 h-5 text-cyan-400" />} />
+                  <InfoCard label="Phone Number" value={applicant.phone?.toString() ||"N/A"} icon={<Phone className="w-5 h-5 text-cyan-400" />} />
                   <InfoCard label="Year Established" value={applicant.yearEstablished || "N/A"} icon={<Calendar className="w-5 h-5 text-cyan-400" />} />
                 </div>
               </div>
 
            
-              {applicant.status === "Pending" && (
+              {applicant.status.toLowerCase() === "Pending" && (
                 <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-700/50">
                   <button
                     onClick={() => openConfirmModal("accept")}
