@@ -41,7 +41,7 @@ const verifyOtp = async (otp: string,email:string,purpose:string) => {
 
 const login=async (formData:LoginFormData)=>{
   try {
-    console.log("login service enterd")
+    console.log("login service enterd",axiosInstance)
     const response = await axiosInstance.post(`${USER_API}/login`, formData);
     console.log("res",response)
     return response.data
