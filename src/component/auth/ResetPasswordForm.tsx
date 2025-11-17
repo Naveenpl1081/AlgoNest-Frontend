@@ -27,6 +27,7 @@ const ResetPasswordForm: React.FC<Props> = ({ onSubmit }) => {
       </h2>
       <InputField
         label="New Password"
+        name="newpassword"
         type="password"
         placeholder="Enter new password"
         value={password}
@@ -36,6 +37,7 @@ const ResetPasswordForm: React.FC<Props> = ({ onSubmit }) => {
       />
       <InputField
         label="Confirm Password"
+        name="confirmpassword"
         type="password"
         placeholder="Confirm your password"
         value={confirmPassword}

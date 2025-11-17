@@ -1,6 +1,17 @@
 import React from 'react';
 
-const AIExplanationPopup = ({ isOpen, onClose, explanation, suggestedFix, codeExample, confidence, aiProvider }) => {
+
+interface AIExplanationPopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+  explanation: string;
+  suggestedFix: string;
+  codeExample?: string;
+  confidence: number;
+  aiProvider: string;
+}
+
+const AIExplanationPopup: React.FC<AIExplanationPopupProps> = ({ isOpen, onClose, explanation, suggestedFix, codeExample, confidence, aiProvider }) => {
   if (!isOpen) return null;
 
   return (

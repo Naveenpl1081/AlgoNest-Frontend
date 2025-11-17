@@ -25,5 +25,5 @@ export const subscriptionValidationSchema = Yup.object({
     .trim()
     .required("Description is required")
     .min(10, "Description must be at least 10 characters long")
-    .max(500, "Description cannot exceed 200 characters"),
+    .max(500, "Description cannot exceed 500 characters"),
 });

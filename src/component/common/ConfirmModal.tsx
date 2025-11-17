@@ -5,10 +5,11 @@ interface ConfirmModalProps {
   isOpen: boolean;
   title?: string;
   message?: string;
-  confirmText?: string;
+  confirmText?: React.ReactNode;
   cancelText?: string;
   onConfirm: () => void;
   onCancel: () => void;
+  disableConfirm?: boolean; 
 }
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({

@@ -3,8 +3,19 @@ import { Send, Bot, User, Code, Lightbulb, Sparkles, RotateCcw, Copy, Check, Ale
 import UserLayout from '../../../layouts/UserLayout';
 import { aiAuthService } from '../../../service/AiService';
 
+interface Message {
+  id: number;
+  type: 'user' | 'ai';
+  content: string;
+  timestamp: string;
+  isComplete: boolean;
+  suggestions?: string[];
+  relatedTopics?: string[];
+  codeExamples?: string[];
+}
+
 const AiChatPage = () => {
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
       type: 'ai',
@@ -15,14 +26,14 @@ const AiChatPage = () => {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [copiedId, setCopiedId] = useState(null);
-  const [error, setError] = useState(null);
-  const [streamingMessageId, setStreamingMessageId] = useState(null);
-  const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
-  const streamingIntervalRef = useRef(null);
+  const [copiedId, setCopiedId] = useState<string | number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [streamingMessageId, setStreamingMessageId] = useState<number | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const streamingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const messagesContainerRef = useRef(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const userScrolledUp = useRef(false);
   const lastScrollTop = useRef(0);
 
@@ -32,21 +43,20 @@ const AiChatPage = () => {
     return scrollHeight - scrollTop - clientHeight < 100;
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    messagesEndRef.current?.scrollIntoView({ behavior });
   };
-
 
   const handleScroll = () => {
     if (!messagesContainerRef.current) return;
     const { scrollTop } = messagesContainerRef.current;
     
- 
+    // User scrolled up
     if (scrollTop < lastScrollTop.current) {
       userScrolledUp.current = true;
     }
     
-  
+    // User scrolled to bottom
     if (isUserAtBottom()) {
       userScrolledUp.current = false;
     }
@@ -54,13 +64,12 @@ const AiChatPage = () => {
     lastScrollTop.current = scrollTop;
   };
 
+  // Auto-scroll during streaming if user hasn't scrolled up
   useEffect(() => {
-    
-    if (!userScrolledUp.current && isUserAtBottom()) {
-      scrollToBottom();
+    if (streamingMessageId && !userScrolledUp.current) {
+      scrollToBottom('auto'); // Use 'auto' for instant scroll during streaming
     }
-  }, [messages]);
-
+  }, [messages, streamingMessageId]);
 
   useEffect(() => {
     return () => {
@@ -70,11 +79,12 @@ const AiChatPage = () => {
     };
   }, []);
 
-  const streamText = (fullText:any, messageId:any, additionalData = {}) => {
+  const streamText = (fullText: string, messageId: number, additionalData = {}) => {
     let currentIndex = 0;
     const typingSpeed = 5; 
 
     setStreamingMessageId(messageId);
+    userScrolledUp.current = false; // Reset scroll lock when starting new stream
 
     streamingIntervalRef.current = setInterval(() => {
       if (currentIndex < fullText.length) {
@@ -90,8 +100,10 @@ const AiChatPage = () => {
         
         currentIndex++;
       } else {
-       
-        clearInterval(streamingIntervalRef.current);
+        // Streaming complete
+        if (streamingIntervalRef.current) {
+          clearInterval(streamingIntervalRef.current);
+        }
         setMessages(prev => 
           prev.map(msg => 
             msg.id === messageId 
@@ -113,7 +125,7 @@ const AiChatPage = () => {
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isTyping) return;
 
-    const userMessage = {
+    const userMessage: Message = {
       id: Date.now(),
       type: 'user',
       content: inputMessage,
@@ -128,9 +140,14 @@ const AiChatPage = () => {
     setError(null);
     userScrolledUp.current = false; 
 
- 
+    // Reset textarea height
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto';
+    }
+
+    // Create placeholder message for AI response
     const aiMessageId = Date.now() + 1;
-    const placeholderMessage = {
+    const placeholderMessage: Message = {
       id: aiMessageId,
       type: 'ai',
       content: '',
@@ -163,31 +180,32 @@ const AiChatPage = () => {
           codeExamples: response.data.codeExamples,
         };
 
-       
+        // Start streaming the response
         streamText(fullResponse, aiMessageId, additionalData);
       } else {
         throw new Error(response.error?.userMessage || 'Failed to get response');
       }
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setError(error.message || 'Failed to send message. Please try again.');
+    } catch (err) {
+      console.error('Error sending message:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send message. Please try again.';
+      setError(errorMessage);
       
       // Remove placeholder and add error message
       setMessages(prev => prev.filter(msg => msg.id !== aiMessageId));
       
-      const errorMessage = {
+      const errorMsg: Message = {
         id: Date.now() + 2,
         type: 'ai',
         content: "❌ Sorry, I encountered an error. Please try again or rephrase your question.",
         timestamp: new Date().toISOString(),
         isComplete: true
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, errorMsg]);
       setIsTyping(false);
     }
   };
 
-  const handleKeyPress = (e:any) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -213,7 +231,7 @@ const AiChatPage = () => {
     setStreamingMessageId(null);
   };
 
-  const handleCopyCode = (content, messageId) => {
+  const handleCopyCode = (content: string, messageId: string | number) => {
     navigator.clipboard.writeText(content);
     setCopiedId(messageId);
     setTimeout(() => setCopiedId(null), 2000);
@@ -225,7 +243,7 @@ const AiChatPage = () => {
     { icon: <Sparkles className="w-4 h-4" />, text: "What are data structures?" }
   ];
 
-  const renderMessageContent = (message:any) => {
+  const renderMessageContent = (message: Message) => {
     const isStreaming = message.id === streamingMessageId;
     
     return (
@@ -237,13 +255,13 @@ const AiChatPage = () => {
           )}
         </div>
 
-     
+        {/* Additional content only shown when message is complete */}
         {message.isComplete && (
           <>
-           
+            {/* Code Examples */}
             {message.codeExamples && message.codeExamples.length > 0 && (
               <div className="space-y-2 mt-4">
-                {message.codeExamples.map((code:any, index:any) => (
+                {message.codeExamples.map((code, index) => (
                   <div key={index} className="bg-slate-800/50 border border-slate-600/30 rounded-lg p-3">
                     <pre className="text-sm text-gray-300 overflow-x-auto">
                       <code>{code}</code>
@@ -269,12 +287,12 @@ const AiChatPage = () => {
               </div>
             )}
 
-           
+            {/* Suggestions */}
             {message.suggestions && message.suggestions.length > 0 && (
               <div className="mt-4 space-y-2">
                 <p className="text-xs text-gray-400 font-semibold">💡 Suggestions:</p>
                 <ul className="space-y-1">
-                  {message.suggestions.map((suggestion:any, index:any) => (
+                  {message.suggestions.map((suggestion, index) => (
                     <li key={index} className="text-sm text-gray-300 flex items-start">
                       <span className="text-blue-400 mr-2">•</span>
                       {suggestion}
@@ -284,12 +302,12 @@ const AiChatPage = () => {
               </div>
             )}
 
-      
+            {/* Related Topics */}
             {message.relatedTopics && message.relatedTopics.length > 0 && (
               <div className="mt-4">
                 <p className="text-xs text-gray-400 font-semibold mb-2">🔗 Related Topics:</p>
                 <div className="flex flex-wrap gap-2">
-                  {message.relatedTopics.map((topic:any, index:any) => (
+                  {message.relatedTopics.map((topic, index) => (
                     <span
                       key={index}
                       className="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded-full text-xs text-blue-300"
@@ -301,7 +319,7 @@ const AiChatPage = () => {
               </div>
             )}
 
-        
+            {/* Copy button for AI messages */}
             {message.type === 'ai' && (
               <button
                 onClick={() => handleCopyCode(message.content, message.id)}
@@ -330,64 +348,65 @@ const AiChatPage = () => {
     <UserLayout>
       <div className="max-w-6xl mx-auto px-4 py-6 h-[calc(100vh-120px)] flex flex-col">
         {/* Header */}
-        <div className="bg-slate-700/40 border border-slate-600/30 rounded-2xl p-4 mb-4 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-slate-800/80 via-slate-700/60 to-slate-800/80 border border-slate-600/40 rounded-2xl p-5 mb-4 flex items-center justify-between shadow-lg shadow-slate-900/50">
           <div className="flex items-center space-x-3">
-            <div className="bg-gradient-to-br from-blue-500 to-purple-500 w-10 h-10 rounded-xl flex items-center justify-center">
+            <div className="bg-gradient-to-br from-blue-500 via-purple-500 to-blue-600 w-11 h-11 rounded-xl flex items-center justify-center shadow-md">
               <Bot className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white">AI Coding Tutor</h1>
+              <h1 className="text-xl font-bold text-white">AI Coding Tutor</h1>
               <p className="text-xs text-gray-400">Your personal programming assistant</p>
             </div>
           </div>
           <button
             onClick={handleClearChat}
-            className="flex items-center space-x-2 px-4 py-2 bg-slate-600/50 hover:bg-slate-600/70 rounded-lg transition-colors text-gray-300 text-sm"
+            className="flex items-center space-x-2 px-4 py-2 bg-slate-600/50 hover:bg-slate-600/70 rounded-lg transition-all duration-200 text-gray-300 text-sm hover:shadow-md"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Clear Chat</span>
           </button>
         </div>
 
-       
+        {/* Error Message */}
         {error && (
-          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 mb-4 flex items-start space-x-2">
+          <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mb-4 flex items-start space-x-2 shadow-lg">
             <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-sm text-red-300">{error}</p>
             </div>
             <button
               onClick={() => setError(null)}
-              className="text-red-400 hover:text-red-300"
+              className="text-red-400 hover:text-red-300 text-lg font-bold"
             >
               ×
             </button>
           </div>
         )}
 
-      
-        <div className="flex-1 bg-slate-700/20 border border-slate-600/30 rounded-2xl overflow-hidden flex flex-col">
+        {/* Chat Container */}
+        <div className="flex-1 bg-gradient-to-br from-slate-800/40 via-slate-700/30 to-slate-800/40 border border-slate-600/40 rounded-2xl overflow-hidden flex flex-col shadow-xl">
           <div 
             ref={messagesContainerRef}
             onScroll={handleScroll}
             className="flex-1 overflow-y-auto p-6 space-y-6"
+            style={{ overflowAnchor: 'auto' }}
           >
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
               >
                 <div
                   className={`flex items-start space-x-3 max-w-3xl ${
                     message.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''
                   }`}
                 >
-                 
+                  {/* Avatar */}
                   <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md ${
                       message.type === 'ai'
-                        ? 'bg-gradient-to-br from-blue-500 to-purple-500'
-                        : 'bg-slate-600'
+                        ? 'bg-gradient-to-br from-blue-500 via-purple-500 to-blue-600'
+                        : 'bg-gradient-to-br from-slate-600 to-slate-700'
                     }`}
                   >
                     {message.type === 'ai' ? (
@@ -397,12 +416,12 @@ const AiChatPage = () => {
                     )}
                   </div>
 
-                 
+                  {/* Message Bubble */}
                   <div
-                    className={`rounded-2xl p-4 ${
+                    className={`rounded-2xl p-4 shadow-lg ${
                       message.type === 'ai'
-                        ? 'bg-slate-700/60 border border-slate-600/30'
-                        : 'bg-gradient-to-r from-blue-600/40 to-purple-600/40 border border-blue-500/30'
+                        ? 'bg-slate-700/70 border border-slate-600/40 backdrop-blur-sm'
+                        : 'bg-gradient-to-r from-blue-600/50 via-purple-600/50 to-blue-600/50 border border-blue-500/40 backdrop-blur-sm'
                     }`}
                   >
                     {renderMessageContent(message)}
@@ -411,14 +430,14 @@ const AiChatPage = () => {
               </div>
             ))}
 
-           
+            {/* Typing Indicator */}
             {isTyping && !streamingMessageId && (
-              <div className="flex justify-start">
+              <div className="flex justify-start animate-fadeIn">
                 <div className="flex items-start space-x-3 max-w-3xl">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-blue-500 to-purple-500">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-blue-500 via-purple-500 to-blue-600 shadow-md">
                     <Bot className="w-5 h-5 text-white" />
                   </div>
-                  <div className="bg-slate-700/60 border border-slate-600/30 rounded-2xl p-4">
+                  <div className="bg-slate-700/70 border border-slate-600/40 rounded-2xl p-4 shadow-lg backdrop-blur-sm">
                     <div className="flex space-x-2">
                       <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
                       <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -432,16 +451,16 @@ const AiChatPage = () => {
             <div ref={messagesEndRef} />
           </div>
 
-     
+          {/* Quick Prompts */}
           {messages.length === 1 && (
-            <div className="px-6 pb-4">
-              <p className="text-sm text-gray-400 mb-3">Quick start:</p>
+            <div className="px-6 pb-4 border-t border-slate-600/30 pt-4">
+              <p className="text-sm text-gray-400 mb-3 font-medium">✨ Quick start:</p>
               <div className="flex flex-wrap gap-2">
                 {quickPrompts.map((prompt, index) => (
                   <button
                     key={index}
                     onClick={() => setInputMessage(prompt.text)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-slate-700/60 hover:bg-slate-700/80 border border-slate-600/30 rounded-lg transition-colors text-sm text-gray-300"
+                    className="flex items-center space-x-2 px-4 py-2.5 bg-slate-700/60 hover:bg-slate-700/80 border border-slate-600/40 rounded-xl transition-all duration-200 text-sm text-gray-300 hover:shadow-md hover:scale-105"
                   >
                     {prompt.icon}
                     <span>{prompt.text}</span>
@@ -451,10 +470,10 @@ const AiChatPage = () => {
             </div>
           )}
 
-         
-          <div className="border-t border-slate-600/30 p-4">
+          {/* Input Area */}
+          <div className="border-t border-slate-600/40 p-4 bg-slate-800/30 backdrop-blur-sm">
             <div className="flex items-end space-x-3">
-              <div className="flex-1 bg-slate-700/60 border border-slate-600/30 rounded-xl focus-within:border-blue-500/50 transition-colors">
+              <div className="flex-1 bg-slate-700/60 border border-slate-600/40 rounded-xl focus-within:border-blue-500/60 focus-within:shadow-lg focus-within:shadow-blue-500/20 transition-all duration-200">
                 <textarea
                   ref={inputRef}
                   value={inputMessage}
@@ -462,12 +481,13 @@ const AiChatPage = () => {
                   onKeyPress={handleKeyPress}
                   placeholder="Ask me anything about coding, algorithms, or problem-solving..."
                   className="w-full bg-transparent text-gray-200 placeholder-gray-500 p-4 resize-none focus:outline-none max-h-32"
-                  rows="1"
+                  rows={1}
                   disabled={isTyping}
                   style={{ minHeight: '24px' }}
                   onInput={(e) => {
-                    e.target.style.height = 'auto';
-                    e.target.style.height = Math.min(e.target.scrollHeight, 128) + 'px';
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = Math.min(target.scrollHeight, 128) + 'px';
                   }}
                 />
               </div>
@@ -476,7 +496,7 @@ const AiChatPage = () => {
                 disabled={!inputMessage.trim() || isTyping}
                 className={`p-4 rounded-xl transition-all duration-300 ${
                   inputMessage.trim() && !isTyping
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg hover:shadow-blue-500/50'
+                    ? 'bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 hover:from-blue-600 hover:via-purple-600 hover:to-blue-700 text-white shadow-lg hover:shadow-blue-500/50 hover:scale-105'
                     : 'bg-slate-600/50 text-gray-500 cursor-not-allowed'
                 }`}
               >
@@ -484,11 +504,28 @@ const AiChatPage = () => {
               </button>
             </div>
             <p className="text-xs text-gray-500 mt-2 text-center">
-              Press Enter to send, Shift+Enter for new line
+              Press Enter to send • Shift+Enter for new line
             </p>
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+      `}</style>
     </UserLayout>
   );
 };
