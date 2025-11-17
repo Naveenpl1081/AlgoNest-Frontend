@@ -8,3 +8,6 @@ export const envConfig = {
   apiUrl: getENV("VITE_API_URL"),
   cloudinaryBaseUrl: getENV("VITE_CLOUDINARY_BASE_URL"),
 };
+
+
+console.log("envconfig",envConfig)
