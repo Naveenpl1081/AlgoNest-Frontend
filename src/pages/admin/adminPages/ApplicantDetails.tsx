@@ -209,13 +209,13 @@ export const ApplicantDetails: React.FC = () => {
                 <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-700/50">
                   <button
                     onClick={() => openConfirmModal("accept")}
-                    className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl hover:from-emerald-600 hover:to-green-700"
+                    className="flex-1 px-6 py-3 bg-linear-to-r from-emerald-500 to-green-600 text-white rounded-xl hover:from-emerald-600 hover:to-green-700"
                   >
                     Accept Applicant
                   </button>
                   <button
                     onClick={() => openConfirmModal("reject")}
-                    className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700"
+                    className="flex-1 px-6 py-3 bg-linear-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700"
                   >
                     Reject Applicant
                   </button>
