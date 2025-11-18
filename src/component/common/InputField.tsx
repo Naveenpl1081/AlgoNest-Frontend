@@ -1,3 +1,5 @@
+// src/component/common/InputField.tsx
+
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -76,7 +78,8 @@ const InputField: React.FC<{
           </button>
         )}
       </div>
-
+      
+      {/* THIS IS WHERE THE ERROR IS RENDERED */}
       {error && touched && <p className="text-red-400 text-sm mt-1">{error}</p>}
     </div>
   );

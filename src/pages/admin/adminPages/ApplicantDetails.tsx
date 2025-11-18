@@ -27,7 +27,10 @@ export const ApplicantDetails: React.FC = () => {
   const [applicant, setApplicant] = useState<IRecruiter | null>(
     location.state?.applicant || null
   );
+
+  console.log("applicant",applicant)
   const user=location.state?.user || null
+
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [rejectReasonModalOpen, setRejectReasonModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"accept" | "reject" | null>(null);
@@ -205,7 +208,7 @@ export const ApplicantDetails: React.FC = () => {
               </div>
 
            
-              {applicant.status.toLowerCase() === "Pending" && (
+              {applicant.status.toLowerCase() === "pending" && (
                 <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-700/50">
                   <button
                     onClick={() => openConfirmModal("accept")}

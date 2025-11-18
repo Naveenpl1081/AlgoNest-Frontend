@@ -1,10 +1,13 @@
+// src/components/SignupForm.tsx
+
 import React, { useState } from "react";
-import { SignupFormData } from "../../types/auth.types";
+import { SignupFormData, SignupFormProps } from "../../types/auth.types";
 import InputField from "../common/InputField";
-import Button from "../common/Button";
-import { SignupFormProps } from "../../types/auth.types";
+import Button from "../common/Button"; // Assuming you have a Button component
 import { useNavigate } from "react-router-dom";
 import { validateSignupForm } from "../../utils/validations/ValidateSignupForm" ;
+
+// Assuming you have a separate common/Button component that accepts size, variant, disabled, etc.
 
 const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
     const [formData, setFormData] = useState<SignupFormData>({
@@ -14,9 +17,11 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
       confirmPassword: "",
     });
 
-    const navigate=useNavigate()
+    const navigate = useNavigate();
   
     const [errors, setErrors] = useState<Partial<SignupFormData>>({});
+    // FIX: Add touched state to track if a field has been visited
+    const [touched, setTouched] = useState<Partial<Record<keyof SignupFormData, boolean>>>({});
     const [isLoading, setIsLoading] = useState(false);
   
     const handleChange = (field: keyof SignupFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +30,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
         [field]: e.target.value,
       }));
       
+      // Clear error immediately when user types
       if (errors[field]) {
         setErrors((prev) => ({
           ...prev,
@@ -33,6 +39,20 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
       }
     };
   
+    // FIX: Handler to set a field as touched when the user blurs it
+    const handleBlur = (field: keyof SignupFormData) => () => {
+      setTouched((prev) => ({
+        ...prev,
+        [field]: true,
+      }));
+      // Optional: Re-run validation on blur to show instant feedback
+      const currentErrors = validateSignupForm(formData);
+      setErrors((prev) => ({
+          ...prev,
+          [field]: currentErrors[field]
+      }));
+    };
+    
     const validateForm = (): boolean => {
       const newErrors = validateSignupForm(formData);
       setErrors(newErrors);
@@ -41,6 +61,14 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
     
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
+
+      // FIX: Mark all fields as touched on submission attempt
+      setTouched({
+        username: true,
+        email: true,
+        password: true,
+        confirmPassword: true,
+      });
   
       if (!validateForm()) return;
   
@@ -62,8 +90,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
       }
     }
   
-  
-  
     const navigateToLogin = () => {
      navigate(`/${role.toLocaleLowerCase()}/login`)
     };
@@ -72,13 +98,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
       <div className="w-full">
         <div className="text-center mb-8">
           <div className="mb-4">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+            <div className="w-20 h-20 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
               <span className="text-2xl font-bold text-white">
                 {role.charAt(0).toUpperCase()}
               </span>
             </div>
           </div>
-          <h1 className="text-4xl font-bold  mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold  mb-2 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Create Account
           </h1>
           <p className="text-gray-300 text-lg">
@@ -95,6 +121,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
             value={formData.username}
             onChange={handleChange("username")}
             error={errors.username}
+            // FIX: Pass touched state and onBlur handler
+            touched={touched.username}
+            onBlur={handleBlur("username")}
             required
           />
   
@@ -106,6 +135,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
             value={formData.email}
             onChange={handleChange("email")}
             error={errors.email}
+            // FIX: Pass touched state and onBlur handler
+            touched={touched.email}
+            onBlur={handleBlur("email")}
             required
           />
   
@@ -117,6 +149,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
             value={formData.password}
             onChange={handleChange("password")}
             error={errors.password}
+            // FIX: Pass touched state and onBlur handler
+            touched={touched.password}
+            onBlur={handleBlur("password")}
             required
             toggleable
           />
@@ -129,6 +164,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
             value={formData.confirmPassword}
             onChange={handleChange("confirmPassword")}
             error={errors.confirmPassword}
+            // FIX: Pass touched state and onBlur handler
+            touched={touched.confirmPassword}
+            onBlur={handleBlur("confirmPassword")}
             required
             toggleable
           />
@@ -141,8 +179,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
               disabled={isLoading}
               className={isLoading ? "opacity-75 cursor-not-allowed" : ""}
               onClick={(e) => {
-                e.preventDefault();
-                handleSubmit(e );
+                // Ensure type is 'submit' for button to work correctly within the form
+                e.preventDefault(); 
+                handleSubmit(e);
               }}
             >
               {isLoading ? (
@@ -162,9 +201,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ role , onSubmit }) => {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-600"></div>
             </div>
-          
           </div>
-  
         </div>
   
         <div className="mt-8 text-center">
