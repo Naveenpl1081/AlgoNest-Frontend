@@ -10,6 +10,10 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true, 
+        type: 'module',
+      },
       includeAssets: ['vite.svg', 'icon-192x192.png', 'icon-512x512.png'],
       manifest: {
         name: 'AlgoNest',
