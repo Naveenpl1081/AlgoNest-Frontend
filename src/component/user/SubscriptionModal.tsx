@@ -37,6 +37,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
       const response = await subscriptionService.makePurcahse(planId);
 
       console.log("Payment response:", response);
+      
 
       if (response?.success && response?.data?.checkoutUrl) {
        
@@ -84,7 +85,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
       />
 
       <div className="relative w-full max-w-5xl max-h-[88vh] overflow-hidden rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-slate-700/40 shadow-xl">
-        <div className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 text-center">
+        <div className="relative bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 text-center">
           <button
             onClick={onClose}
             className="absolute top-3 right-3 p-2 bg-white/15 rounded-full hover:bg-white/25 transition"
@@ -149,7 +150,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                   >
                     {isBest && (
                       <div className="absolute -top-2 left-1/2 -translate-x-1/2">
-                        <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-xs font-bold text-slate-900 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                        <span className="bg-linear-to-r from-yellow-400 to-orange-500 text-xs font-bold text-slate-900 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                           <Star className="w-3 h-3 fill-current" />
                           RECOMMENDED
                         </span>
@@ -162,7 +163,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
 
                     <div className="text-center mb-4">
                       <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                        <span className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-purple-400">
                           ₹{plan.price.toLocaleString()}
                         </span>
                         <span className="text-slate-400 text-sm">
@@ -194,7 +195,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                       className={`w-full py-2.5 rounded-lg font-medium text-sm transition-all relative overflow-hidden mt-auto flex items-center justify-center gap-2
                         ${
                           isBest
-                            ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow hover:shadow-indigo-500/30"
+                            ? "bg-linear-to-r from-indigo-500 to-purple-600 text-white shadow hover:shadow-indigo-500/30"
                             : "bg-slate-700 text-white hover:bg-slate-600"
                         }
                         ${isLoading ? "opacity-70 cursor-not-allowed" : ""}

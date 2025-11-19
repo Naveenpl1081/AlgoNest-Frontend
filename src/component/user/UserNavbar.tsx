@@ -23,7 +23,7 @@ const UserNavbar = () => {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/user/home" className="flex items-center gap-2">
             <Layers className="w-7 h-7 text-cyan-400" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               AlgoNest
             </span>
           </Link>
@@ -54,7 +54,7 @@ const UserNavbar = () => {
             {/* Desktop Premium Button - Improved Design */}
             <button
               onClick={() => setIsModalOpen(true)}
-              className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105"
+              className="hidden md:flex items-center gap-2 px-4 py-2 bg-linear-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105"
             >
               <Crown className="w-4 h-4" />
               <span>Premium</span>
@@ -98,7 +98,7 @@ const UserNavbar = () => {
                   setIsModalOpen(true);
                   setIsMenuOpen(false);
                 }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/30"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-linear-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/30"
               >
                 <Crown className="w-5 h-5" />
                 <span>Premium</span>
