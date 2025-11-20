@@ -173,9 +173,10 @@ const getUserStats= async () => {
   }
 }
 
-const updateProfile = async (formData: FormData) => {
+const updateProfile = async (userId:string,formData: FormData) => {
   try {
-    const response = await axiosInstance.patch(`${USER_API}/edit-profile`, formData, {
+    console.log("userIdddd",userId)
+    const response = await axiosInstance.patch(`${USER_API}/edit-profile/${userId}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data", 
       },

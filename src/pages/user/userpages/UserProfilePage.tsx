@@ -16,6 +16,7 @@ import { IUserStats } from "../../../models/user";
 const ProfilePage: React.FC = () => {
   const [userStats, setUserStats] = useState<IUserStats | null>(null);
   const [userInfo, setUserInfo] = useState({
+    _id:"",
     username: "",
     email: "",
     createdAt: "",
