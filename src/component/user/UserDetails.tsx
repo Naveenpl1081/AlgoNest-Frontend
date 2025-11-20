@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import {
   User,
   Mail,
@@ -12,6 +12,7 @@ import ProfileEditModal from "./ProfileEditModal";
 import { Buildimage } from "../../utils/cloudinary/cloudinary";
 
 type UserInfo = {
+  _id:string
   username: string;
   email: string;
   createdAt: string;

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 type Props = {
   userInfo: {
+    _id:string
     username: string;
     email: string;
     createdAt: string;
@@ -37,6 +38,8 @@ const ProfileEditModal: React.FC<Props> = ({
     }
   };
 
+  console.log("userInfo",userInfo)
+
   const handleUpdate = async () => {
     const formData = new FormData();
     formData.append("firstName", firstName);
@@ -50,7 +53,7 @@ const ProfileEditModal: React.FC<Props> = ({
     setLoading(true);
 
     try {
-      const response = await userAuthService.updateProfile(formData);
+      const response = await userAuthService.updateProfile(userInfo._id,formData);
 
       if (response.success && response.user) {
         toast.success("Profile updated successfully!");
