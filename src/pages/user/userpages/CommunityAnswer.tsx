@@ -70,37 +70,13 @@ const CommunityAnswer = () => {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (questionId) {
-      if (!questionData) {
-        fetchQuestionData();
-      }
-      fetchAnswers(currentPage);
-    }
-  }, [questionId, currentPage]);
-
-  const fetchQuestionData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await communityService.getQuestionById(questionId!);
-      if (response?.data) {
-        setQuestionData(response.data);
-      } else {
-        setError("Question not found");
-      }
-    } catch (error) {
-      console.error("Error fetching question details:", error);
-      setError("Failed to fetch question details");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  
   const fetchAnswers = async (page: number) => {
+    if (!questionId) return;
+
     try {
       const { answers: answersData, pagination: paginationData } =
-        await communityService.getAnswersByQuestionId(questionId!, page, 4);
+        await communityService.getAnswersByQuestionId(questionId, page, 4);
 
       console.log("Fetched answers:", answersData);
       console.log("Pagination:", paginationData);
@@ -112,6 +88,7 @@ const CommunityAnswer = () => {
             username: answer.userId?.username || "Anonymous",
             role: answer.userId?.email || "User",
             content: answer.body,
+           
             upvotes: answer.likes?.length || 0,
             downvotes: answer.dislikes?.length || 0,
             createdAt: new Date(answer.createdAt),
@@ -131,6 +108,33 @@ const CommunityAnswer = () => {
     }
   };
 
+  useEffect(() => {
+    if (questionId) {
+      if (!questionData) {
+        fetchQuestionData();
+      }
+      fetchAnswers(currentPage);
+    }
+  }, [questionId, currentPage]); 
+
+  const fetchQuestionData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await communityService.getQuestionById(questionId!);
+      if (response?.data) {
+        setQuestionData(response.data);
+      } else {
+        setError("Question not found");
+      }
+    } catch (error) {
+      console.error("Error fetching question details:", error);
+      setError("Failed to fetch question details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmitAnswer = async (questionId: string, answerText: string) => {
     if (!answerText.trim()) return;
 
@@ -144,16 +148,25 @@ const CommunityAnswer = () => {
       console.log("Answer submitted:", res);
 
       if (res.success || res) {
-        await fetchQuestionData();
+       
+        await fetchQuestionData(); 
+       
         setCurrentPage(1);
         await fetchAnswers(1);
       }
     } catch (error) {
       console.error("Error submitting answer:", error);
-      alert("Failed to submit answer. Please try again.");
+      
+      console.error("Failed to submit answer. Please try again.");
     } finally {
       setSubmitting(false);
     }
+  };
+
+ 
+  const handleAnswerUpdate = () => {
+    
+    fetchAnswers(currentPage);
   };
 
   const handlePageChange = (page: number) => {
@@ -194,6 +207,8 @@ const CommunityAnswer = () => {
         pagination={pagination}
         currentPage={currentPage}
         onPageChange={handlePageChange}
+        // --- PASS NEW PROP TO CHILD ---
+        onAnswerUpdate={handleAnswerUpdate}
       />
     </UserLayout>
   );

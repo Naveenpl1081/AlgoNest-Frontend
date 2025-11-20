@@ -28,16 +28,6 @@ interface PaginationData {
   hasPrevPage: boolean;
 }
 
-interface AnswerComponentProps {
-  questionData: QuestionData;
-  onSubmitAnswer: (questionId: string, answerText: string) => Promise<void>;
-  answers: Answer[];
-  submitting?: boolean;
-  pagination: PaginationData | null;
-  currentPage: number;
-  onPageChange: (page: number) => void;
-}
-
 interface Answer {
   id: string;
   username: string;
@@ -48,6 +38,19 @@ interface Answer {
   createdAt: Date;
   isBestAnswer?: boolean;
 }
+
+interface AnswerComponentProps {
+  questionData: QuestionData;
+  onSubmitAnswer: (questionId: string, answerText: string) => Promise<void>;
+  answers: Answer[];
+  submitting?: boolean;
+  pagination: PaginationData | null;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+ 
+  onAnswerUpdate: () => void;
+}
+
 
 const ThumbsUpIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
@@ -159,6 +162,8 @@ const AnswerComponent: React.FC<AnswerComponentProps> = ({
   pagination,
   currentPage,
   onPageChange,
+
+  onAnswerUpdate, 
 }) => {
   const [answerText, setAnswerText] = useState<string>("");
 
@@ -174,13 +179,22 @@ const AnswerComponent: React.FC<AnswerComponentProps> = ({
     try {
       const response = await communityService.handleLike(answerId);
       console.log("respo", response);
-    } catch (error) {}
+      
+      onAnswerUpdate(); 
+    } catch (error) {
+        console.error("Error liking answer:", error);
+    }
   };
+  
   const handleDislike = async (answerId: string) => {
     try {
       const response = await communityService.handledisLike(answerId);
-      console.log("respo", response);
-    } catch (error) {}
+      console.log("respoh", response);
+    
+      onAnswerUpdate(); 
+    } catch (error) {
+        console.error("Error disliking answer:", error);
+    }
   };
 
   const formatDate = (date: Date): string => {
