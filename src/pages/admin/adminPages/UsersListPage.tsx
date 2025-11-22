@@ -31,16 +31,6 @@ export const UsersListPage: React.FC = () => {
   }, [currentPage, searchTerm, statusFilter]);
   
 
-  // useEffect(() => {
-  //   const handler = setTimeout(() => {
-  //     fetchUsers();
-  //   }, 500);
-  
-  //   return () => {
-  //     clearTimeout(handler);
-  //   };
-  // }, [currentPage, searchTerm, statusFilter]);
-
   const fetchUsers = async () => {
     try {
       const res = await adminAuthService.getAllUsers({
