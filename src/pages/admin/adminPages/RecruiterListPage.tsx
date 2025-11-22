@@ -86,12 +86,12 @@ export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({
 
     try {
       const res = await adminAuthService.toggleRecruiterStatus(
-        selectedUser._id
+        selectedUser.id
       );
       if (res.success) {
         setUsers((prevUsers) =>
           prevUsers.map((user) =>
-            user._id === selectedUser._id
+            user.id === selectedUser.id
               ? {
                   ...user,
                   status: user.status === "Active" ? "InActive" : "Active",
@@ -155,7 +155,7 @@ export const RecruiterListPage: React.FC<ApplicantsListPageProps> = ({
         <Button
           className="bg-blue-500 hover:bg-blue-600 text-white"
           onClick={() =>
-            navigate(`/admin/applicants/${item._id}`, {
+            navigate(`/admin/applicants/${item.id}`, {
               state: { applicant: item, user: user },
             })
           }

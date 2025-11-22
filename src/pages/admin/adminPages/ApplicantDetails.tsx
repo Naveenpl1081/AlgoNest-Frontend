@@ -28,9 +28,9 @@ export const ApplicantDetails: React.FC = () => {
     location.state?.applicant || null
   );
 
-  console.log("applicant",applicant)
+  
   const user=location.state?.user || null
-
+  console.log("applicanttttt",user)
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [rejectReasonModalOpen, setRejectReasonModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"accept" | "reject" | null>(null);
@@ -60,8 +60,8 @@ export const ApplicantDetails: React.FC = () => {
     try {
       const res =
         actionType === "accept"
-          ? await adminAuthService.acceptApplicant(user._id)
-          : await adminAuthService.rejectApplicant(user._id, rejectReason);
+          ? await adminAuthService.acceptApplicant(applicant.id)
+          : await adminAuthService.rejectApplicant(applicant.id, rejectReason);
 
       if (res.success) {
         navigate("/admin/applicants");
