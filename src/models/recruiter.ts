@@ -1,5 +1,5 @@
 export interface IRecruiter {
-    _id: string;
+    id: string;
     username: string;
     email: string;
     status: "Active" | "InActive" | "pending";
