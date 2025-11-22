@@ -60,8 +60,8 @@ export const ApplicantDetails: React.FC = () => {
     try {
       const res =
         actionType === "accept"
-          ? await adminAuthService.acceptApplicant(applicant._id)
-          : await adminAuthService.rejectApplicant(applicant._id, rejectReason);
+          ? await adminAuthService.acceptApplicant(user._id)
+          : await adminAuthService.rejectApplicant(user._id, rejectReason);
 
       if (res.success) {
         navigate("/admin/applicants");

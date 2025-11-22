@@ -207,7 +207,6 @@ const CommunityAnswer = () => {
         pagination={pagination}
         currentPage={currentPage}
         onPageChange={handlePageChange}
-        // --- PASS NEW PROP TO CHILD ---
         onAnswerUpdate={handleAnswerUpdate}
       />
     </UserLayout>
